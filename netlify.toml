@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/"
+  to = "/Broadway-Marketing-Dashboard.html"
+  status = 200
