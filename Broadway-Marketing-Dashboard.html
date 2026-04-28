@@ -427,6 +427,148 @@ header {
 .hidden { display:none !important; }
 .flex-between { display:flex; align-items:center; justify-content:space-between; }
 
+/* ─── MOBILE — iPhone ─── */
+@media (max-width: 768px) {
+
+  /* Header */
+  header {
+    padding: 0 16px;
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .brand-name { font-size: 17px; }
+  .brand-tagline { font-size: 10px; }
+  .header-right { display: none; }
+
+  /* Stats bar */
+  .stats-bar {
+    padding: 10px 16px;
+    gap: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .stats-bar::-webkit-scrollbar { display: none; }
+  .stat-chip { white-space: nowrap; flex-shrink: 0; font-size: 11px; padding: 4px 10px; }
+
+  /* Tab bar */
+  .tab-bar {
+    padding: 0 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    top: 52px;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 12px 14px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+
+  /* Main content */
+  .main { padding: 24px 16px 60px; }
+
+  /* Section headers */
+  .section-header { margin-bottom: 20px; }
+  .section-title { font-size: 30px; letter-spacing: -0.02em; }
+  .section-sub { font-size: 14px; margin-top: 6px; }
+
+  /* Grids — all single column on mobile */
+  .grid-2 { grid-template-columns: 1fr; gap: 16px; }
+  .grid-3 { grid-template-columns: 1fr; gap: 16px; }
+  .grid-4 { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gap-20 { margin-top: 16px; }
+  .gap-28 { margin-top: 20px; }
+
+  /* Cards */
+  .card-header { padding: 16px 18px 12px; }
+  .card-title { font-size: 15px; }
+  .card-body { padding: 16px 18px; }
+
+  /* This week card — span 2 → full width */
+  .card[style*="grid-column: span 2"] { grid-column: span 1 !important; }
+
+  /* Anchor grid in overview — stack to 1 column */
+  .card-body[style*="grid-template-columns:repeat(3,1fr)"] {
+    display: block !important;
+  }
+  .card-body[style*="grid-template-columns:repeat(3,1fr)"] > div {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px !important;
+  }
+  .card-body[style*="grid-template-columns:repeat(3,1fr)"] > div:last-child {
+    border-bottom: none;
+  }
+
+  /* Category coverage — 3 columns instead of 6 */
+  .card-body[style*="grid-template-columns:repeat(6,1fr)"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .card-body[style*="grid-template-columns:repeat(6,1fr)"] > div {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-body[style*="grid-template-columns:repeat(6,1fr)"] > div:nth-child(3),
+  .card-body[style*="grid-template-columns:repeat(6,1fr)"] > div:nth-child(6) {
+    border-right: none !important;
+  }
+
+  /* Blog grid */
+  .blog-grid { grid-template-columns: 1fr; gap: 14px; }
+  .blog-card-title { font-size: 16px; }
+  .filter-bar { gap: 6px; }
+  .filter-btn { font-size: 12px; padding: 5px 12px; }
+
+  /* Matrix — horizontal scroll already on wrapper, just tighten padding */
+  .matrix-wrapper { border-radius: var(--radius-sm); }
+  .matrix-table th, .matrix-table td { padding: 10px 10px; }
+
+  /* In-store timeline */
+  .instore-list::before { left: 44px; }
+  .instore-date { width: 60px; }
+  .instore-date-label { font-size: 10px; padding-right: 10px; }
+  .instore-content { padding: 12px 14px; margin-left: 10px; }
+  .instore-event-name { font-size: 13px; }
+
+  /* Postcard campaign hero */
+  .postcard-campaign { padding: 24px 20px; }
+  .pc-title { font-size: 22px; }
+  .pc-stats { gap: 20px; flex-wrap: wrap; }
+  .pc-stat-val { font-size: 20px; }
+
+  /* Entry mechanic — stack to 1 column */
+  .mechanic-options { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Digital pairing table — hide label column on tiny screens */
+  .modal { border-radius: 16px 16px 0 0; max-height: 92vh; }
+  .modal-title { font-size: 22px; }
+  .modal-body { padding: 20px 20px 24px; }
+  .modal-header { padding: 20px 20px 14px; }
+
+  /* Anchor items */
+  .anchor-date-box { min-width: 44px; padding: 5px 8px; border-radius: 8px; }
+  .anchor-date-day { font-size: 18px; }
+  .anchor-name { font-size: 14px; }
+
+  /* November postcard placeholder */
+  .card[style*="border-style:dashed"] { opacity: 0.8; }
+}
+
+/* ─── Small iPhone (SE, mini) ─── */
+@media (max-width: 390px) {
+  .section-title { font-size: 26px; }
+  .brand-name { font-size: 15px; }
+  .main { padding: 20px 14px 60px; }
+  .card-header { padding: 14px 14px 10px; }
+  .card-body { padding: 14px 14px; }
+  .pc-stats { gap: 14px; }
+  .grid-4 { grid-template-columns: 1fr; }
+}
+
 /* ─── end of styles ─── */
 </style>
 </head>
