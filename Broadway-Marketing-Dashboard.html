@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Broadway BWS — Marketing Dashboard 2026-27</title>
+<style>
+@font-face {
+  font-family: 'Rousseau Deco';
+  src: url('file:///Users/christopherreid/Library/Fonts/rousseau-deco%20(1).ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --bg: #F5F5F7;
+  --surface: #FFFFFF;
+  --surface-2: #FBFBFD;
+  --text-primary: #1D1D1F;
+  --text-secondary: #6E6E73;
+  --text-tertiary: #86868B;
+  --blue: #0071E3;
+  --blue-light: #E8F2FD;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.11);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --p1: #AE2B42;
+  --p2: #155B8A;
+  --p3: #1E5C1E;
+  --p4: #8B6914;
+  --live: #1A7A1A;     --live-bg: #E6F4E6;
+  --ready: #0071E3;    --ready-bg: #E8F2FD;
+  --drafted: #6030AA;  --drafted-bg: #EEE6FA;
+  --overdue: #C0392B;  --overdue-bg: #FAEAEA;
+  --todraft: #6E6E73;  --todraft-bg: #F5F5F7;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HEADER — frosted glass ─── */
+header {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand-name {
+  font-family: 'Rousseau Deco', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+.brand-tagline {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.header-right {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: right;
+  line-height: 1.6;
+}
+.header-right strong { color: var(--text-secondary); font-weight: 500; }
+
+/* ─── STATS BAR ─── */
+.stats-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 48px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.stat-chip .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.stat-chip .val { color: var(--text-primary); font-weight: 600; }
+.stat-chip.urgent { background: var(--overdue-bg); color: var(--overdue); }
+.stat-chip.urgent .val { color: var(--overdue); }
+
+/* ─── TABS ─── */
+.tab-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 48px;
+  position: sticky;
+  top: 56px;
+  z-index: 90;
+}
+.tab-btn {
+  padding: 13px 18px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: -1px;
+  letter-spacing: -0.01em;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+
+/* ─── MAIN ─── */
+.main { padding: 40px 48px 80px; max-width: 1440px; margin: 0 auto; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── SECTION HEADERS ─── */
+.section-header { margin-bottom: 36px; }
+.section-title {
+  font-family: 'Rousseau Deco', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 48px;
+  font-weight: normal;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  display: block;
+}
+.section-sub { font-size: 17px; color: var(--text-secondary); margin-top: 8px; display: block; font-weight: 400; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
+.card-body { padding: 20px 24px; }
+
+/* ─── GRIDS ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.gap-20 { margin-top: 20px; }
+.gap-28 { margin-top: 32px; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.badge-live       { background: var(--live-bg);    color: var(--live); }
+.badge-draft-ready{ background: var(--ready-bg);   color: var(--ready); }
+.badge-drafted    { background: var(--drafted-bg); color: var(--drafted); }
+.badge-overdue    { background: var(--overdue-bg); color: var(--overdue); }
+.badge-to-draft   { background: var(--todraft-bg); color: var(--todraft); border:1px solid var(--border); }
+
+.pillar-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.pillar-1 { background: var(--p1); }
+.pillar-2 { background: var(--p2); }
+.pillar-3 { background: var(--p3); }
+.pillar-4 { background: var(--p4); }
+
+/* ─── BLOG ─── */
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  align-items: center;
+}
+.filter-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn:hover { background: var(--bg); color: var(--text-primary); }
+.filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 500; }
+.filter-btn.p1.active { background: var(--p1); border-color: var(--p1); }
+.filter-btn.p2.active { background: var(--p2); border-color: var(--p2); }
+.filter-btn.p3.active { background: var(--p3); border-color: var(--p3); }
+.filter-btn.p4.active { background: var(--p4); border-color: var(--p4); }
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+.blog-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
+}
+.blog-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.blog-card-stripe { height: 4px; }
+.blog-card-body { padding: 20px 22px 18px; }
+.blog-card-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.blog-num { font-size:11px; font-weight:600; color:var(--text-tertiary); letter-spacing:0.06em; text-transform:uppercase; }
+.blog-card-title { font-size:19px; font-weight:700; color:var(--text-primary); line-height:1.25; margin-bottom:8px; letter-spacing:-0.025em; }
+.blog-card-date { font-size:12px; color:var(--text-tertiary); margin-bottom:10px; }
+.blog-card-keyword { font-size:11px; color:var(--text-secondary); background:var(--bg); padding:4px 10px; border-radius:6px; font-style:italic; margin-bottom:14px; display:block; }
+.blog-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--border); }
+.expand-hint { font-size:12px; color:var(--blue); font-weight:500; }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background: var(--surface);
+  border-radius: 20px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.18);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+.modal-top { height:4px; border-radius:20px 20px 0 0; }
+.modal-header {
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.modal-title { font-family:'Rousseau Deco', -apple-system, BlinkMacSystemFont, sans-serif; font-size:28px; font-weight:normal; color:var(--text-primary); line-height:1.2; letter-spacing:0em; }
+.modal-close {
+  background: var(--bg);
+  border: none;
+  width: 28px; height:28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  display: flex; align-items:center; justify-content:center;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--border); }
+.modal-body { padding: 24px 28px 28px; }
+.modal-section { margin-bottom:20px; }
+.modal-section:last-child { margin-bottom:0; }
+.modal-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-tertiary); margin-bottom:5px; }
+.modal-value { font-size:14px; color:var(--text-secondary); line-height:1.6; }
+.modal-value.tone { font-style:italic; color:var(--text-primary); background:var(--bg); padding:12px 16px; border-radius:10px; border-left:3px solid var(--blue); }
+.modal-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.modal-tag { background:var(--bg); border:1px solid var(--border); padding:4px 12px; border-radius:20px; font-size:12px; color:var(--text-secondary); }
+.alert-box { background:#FFF9E6; border:1px solid rgba(200,160,0,0.2); border-radius:10px; padding:12px 16px; font-size:13px; color:#7A5E00; margin-bottom:18px; }
+.alert-box.red { background:var(--overdue-bg); border-color:rgba(192,57,43,0.2); color:var(--overdue); }
+
+/* ─── OVERVIEW ─── */
+.this-week-list { list-style:none; }
+.this-week-list li { padding:12px 0; border-bottom:1px solid var(--border); display:flex; gap:14px; align-items:flex-start; }
+.this-week-list li:last-child { border-bottom:none; }
+.tw-num { width:24px; height:24px; background:var(--text-primary); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; margin-top:2px; }
+.tw-num.urgent { background: var(--overdue); }
+.tw-num.gold   { background: var(--blue); }
+.tw-label { font-weight:700; color:var(--text-primary); font-size:15px; letter-spacing:-0.01em; }
+.tw-desc  { color:var(--text-secondary); font-size:12px; margin-top:2px; }
+
+.pillar-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
+.pillar-row:last-child { border-bottom:none; }
+.pillar-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.pillar-name { font-size:13px; color:var(--text-secondary); flex:1; }
+.pillar-count { font-size:13px; font-weight:600; color:var(--text-primary); width:20px; text-align:right; }
+.pillar-bar-track { width:80px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.pillar-bar-fill { height:100%; border-radius:2px; }
+
+.anchor-item { padding:12px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+.anchor-item:last-child { border-bottom:none; }
+.anchor-date-box { background:var(--text-primary); color:#fff; border-radius:10px; text-align:center; padding:6px 10px; min-width:50px; flex-shrink:0; }
+.anchor-date-mo { font-size:9px; text-transform:uppercase; letter-spacing:0.08em; opacity:0.55; }
+.anchor-date-day { font-size:20px; font-weight:700; line-height:1.1; }
+.anchor-info { flex:1; }
+.anchor-name { font-size:15px; font-weight:700; color:var(--text-primary); letter-spacing:-0.015em; }
+.anchor-channels { font-size:11px; color:var(--text-tertiary); margin-top:1px; }
+.tier-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:6px; }
+.tier-1 { background:var(--blue-light); color:var(--blue); }
+.tier-2 { background:var(--bg); color:var(--text-secondary); border:1px solid var(--border-strong); }
+
+/* ─── MATRIX ─── */
+.matrix-wrapper { overflow-x:auto; border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
+.matrix-table { width:100%; border-collapse:collapse; font-size:12px; min-width:900px; }
+.matrix-table th { background:var(--text-primary); color:rgba(255,255,255,0.7); padding:12px 14px; text-align:left; font-weight:500; font-size:11px; letter-spacing:0.04em; white-space:nowrap; }
+.matrix-table th:first-child { color:#fff; font-size:12px; font-weight:600; }
+.matrix-table td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.4; }
+.matrix-table tr:last-child td { border-bottom:none; }
+.matrix-table tr:hover td { background:var(--bg); }
+.matrix-table td:first-child { font-weight:600; color:var(--text-primary); white-space:nowrap; }
+.matrix-dot { width:5px; height:5px; background:var(--blue); border-radius:50%; display:inline-block; margin-right:4px; }
+.cell-content { color:var(--text-secondary); font-size:11px; }
+.cell-empty { color:var(--border-strong); font-size:11px; }
+
+/* ─── IN-STORE TIMELINE ─── */
+.instore-list { list-style:none; position:relative; }
+.instore-list::before { content:''; position:absolute; left:50px; top:0; bottom:0; width:1px; background:var(--border); }
+.instore-item { display:flex; gap:0; margin-bottom:20px; position:relative; }
+.instore-date { width:78px; flex-shrink:0; padding-top:4px; }
+.instore-date-label { font-size:11px; font-weight:600; color:var(--text-tertiary); text-align:right; padding-right:16px; }
+.instore-dot-wrap { width:24px; flex-shrink:0; display:flex; justify-content:center; padding-top:6px; position:relative; z-index:1; }
+.instore-dot { width:10px; height:10px; border-radius:50%; background:var(--blue); border:2px solid var(--bg); flex-shrink:0; }
+.instore-dot.tier1 { background:var(--text-primary); }
+.instore-content { flex:1; background:var(--surface); border-radius:var(--radius-sm); padding:14px 18px; margin-left:14px; box-shadow:var(--shadow); }
+.instore-event-name { font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:8px; letter-spacing:-0.01em; }
+.instore-formats { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.format-chip { font-size:10px; padding:3px 9px; border-radius:6px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; }
+.fc-poster  { background:var(--text-primary); color:#fff; }
+.fc-till    { background:#0D4A6B; color:#fff; }
+.fc-shelf   { background:#E8F0E4; color:var(--p3); }
+.fc-counter { background:#FFF8E6; color:#7A5E00; }
+.fc-aframe  { background:var(--bg); color:var(--text-secondary); border:1px solid var(--border-strong); }
+.instore-detail { font-size:12px; color:var(--text-secondary); line-height:1.6; }
+
+/* ─── POSTCARDS ─── */
+.postcard-campaign { background:var(--text-primary); border-radius:var(--radius); padding:32px 36px; color:#fff; margin-bottom:20px; position:relative; overflow:hidden; }
+.postcard-campaign::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.pc-eyebrow { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.45); font-weight:500; margin-bottom:8px; }
+.pc-title { font-family:'Rousseau Deco', -apple-system, BlinkMacSystemFont, sans-serif; font-size:30px; font-weight:normal; margin-bottom:4px; letter-spacing:0.01em; }
+.pc-sub { font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:24px; }
+.pc-stats { display:flex; gap:36px; }
+.pc-stat-val { font-size:24px; font-weight:700; color:#fff; }
+.pc-stat-label { font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+.deadline-flag { background:var(--overdue-bg); border:1px solid rgba(192,57,43,0.15); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.deadline-icon { font-size:20px; flex-shrink:0; }
+.deadline-text { font-size:13px; color:var(--overdue); line-height:1.5; }
+.deadline-text strong { font-weight:700; }
+
+.checklist { list-style:none; }
+.checklist li { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; line-height:1.5; }
+.checklist li:last-child { border-bottom:none; }
+.checklist input[type="checkbox"] { width:16px; height:16px; accent-color:var(--blue); margin-top:1px; cursor:pointer; flex-shrink:0; }
+.checklist label { cursor:pointer; color:var(--text-secondary); flex:1; }
+.checklist input:checked + label { text-decoration:line-through; color:var(--text-tertiary); }
+
+.mechanic-options { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:4px; }
+.mechanic-card { border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; cursor:pointer; transition:all 0.15s; }
+.mechanic-card:hover { background:var(--bg); }
+.mechanic-card.preferred { border-color:var(--blue); background:var(--blue-light); }
+.mechanic-label { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:5px; }
+.mechanic-desc { font-size:12px; color:var(--text-secondary); line-height:1.4; }
+.preferred-flag { font-size:10px; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; color:var(--blue); margin-bottom:4px; }
+
+/* ─── UTILITIES ─── */
+.mt8 { margin-top:8px; }
+.mt16 { margin-top:16px; }
+.text-sm { font-size:12px; color:var(--text-secondary); }
+.text-xs { font-size:11px; color:var(--text-tertiary); }
+.hidden { display:none !important; }
+.flex-between { display:flex; align-items:center; justify-content:space-between; }
+
+/* ─── end of styles ─── */
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="brand-name">Broadway Beer Wine &amp; Spirits</div>
+    <div class="brand-tagline">not every bottle, the right one &nbsp;·&nbsp; est. 1986</div>
+  </div>
+  <div class="header-right">
+    <strong>Marketing Dashboard 2026–27</strong><br>
+    Chris Reid · Updated April 27, 2026
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-chip"><span class="dot" style="background:#2D7A2D"></span><span class="val">1</span> post live</div>
+  <div class="stat-chip"><span class="dot" style="background:#1A5F7A"></span><span class="val">2</span> draft ready</div>
+  <div class="stat-chip"><span class="dot" style="background:#5A3A8A"></span><span class="val">1</span> drafted</div>
+  <div class="stat-chip"><span class="dot" style="background:#B03030"></span><span class="val">1</span> overdue</div>
+  <div class="stat-chip"><span class="dot" style="background:#AAA"></span><span class="val">14</span> to draft</div>
+  <div class="stat-chip" style="margin-left:auto"><span class="dot" style="background:#B8892E"></span><span class="val">May 1</span> next blog publish</div>
+  <div class="stat-chip"><span class="dot" style="background:#B8892E"></span><span class="val">May 10</span> next Tier 1 anchor</div>
+  <div class="stat-chip"><span class="dot" style="background:var(--overdue)"></span><span class="val">May 20</span> postcard print deadline</div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('blog')">Blog Calendar</button>
+  <button class="tab-btn" onclick="switchTab('channels')">Channel Matrix</button>
+  <button class="tab-btn" onclick="switchTab('instore')">In-Store</button>
+  <button class="tab-btn" onclick="switchTab('postcards')">Postcards</button>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════ OVERVIEW ═══════════════════════════════ -->
+<div id="tab-overview" class="tab-panel active">
+  <div class="grid-3">
+
+    <!-- This week -->
+    <div class="card" style="grid-column: span 2">
+      <div class="card-header">
+        <span class="card-title">This Week — April 27, 2026</span>
+        <span class="badge badge-overdue">Action required</span>
+      </div>
+      <div class="card-body" style="padding-top:8px">
+        <ul class="this-week-list">
+          <li>
+            <div class="tw-num urgent">!</div>
+            <div><div class="tw-label">Publish Post 6 — Malbec World Day</div><div class="tw-desc">Overdue since April 17. Draft and publish immediately.</div></div>
+          </li>
+          <li>
+            <div class="tw-num">2</div>
+            <div><div class="tw-label">Publish Post 2 — BC Wine in Kitsilano</div><div class="tw-desc">Draft ready. Schedule now for April 27.</div></div>
+          </li>
+          <li>
+            <div class="tw-num">3</div>
+            <div><div class="tw-label">Publish Post 3 — Grand Crew Loyalty Program</div><div class="tw-desc">Draft ready. Schedule now for April 27.</div></div>
+          </li>
+          <li>
+            <div class="tw-num">4</div>
+            <div><div class="tw-label">Draft Post 4 — Corporate Wine Gifts</div><div class="tw-desc">Blue ocean opportunity. Zero local competition. Publish May 1.</div></div>
+          </li>
+          <li>
+            <div class="tw-num">5</div>
+            <div><div class="tw-label">Schedule Mother's Day email series</div><div class="tw-desc">First send April 28 · Post 5 publishes May 1 · Final send May 9.</div></div>
+          </li>
+          <li>
+            <div class="tw-num gold">6</div>
+            <div><div class="tw-label">Order Greek wines — deadline May 1</div><div class="tw-desc">Assyrtiko, Xinomavro, Agiorgitiko + small ouzo selection for Greek Day (Jun 28).</div></div>
+          </li>
+          <li>
+            <div class="tw-num gold">7</div>
+            <div><div class="tw-label">Start June postcard — print deadline May 20</div><div class="tw-desc">Pull Grand Crew list from Barnet · decide entry mechanic · design in Canva.</div></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Pillar balance -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Content Pillar Balance</span></div>
+      <div class="card-body">
+        <div class="pillar-row">
+          <div class="pillar-dot" style="background:var(--p1)"></div>
+          <div class="pillar-name">Not Every Bottle, The Right One</div>
+          <div class="pillar-count">4</div>
+          <div class="pillar-bar-track"><div class="pillar-bar-fill" style="background:var(--p1);width:80%"></div></div>
+        </div>
+        <div class="pillar-row">
+          <div class="pillar-dot" style="background:var(--p2)"></div>
+          <div class="pillar-name">Without the Pretension</div>
+          <div class="pillar-count">5</div>
+          <div class="pillar-bar-track"><div class="pillar-bar-fill" style="background:var(--p2);width:100%"></div></div>
+        </div>
+        <div class="pillar-row">
+          <div class="pillar-dot" style="background:var(--p3)"></div>
+          <div class="pillar-name">Kitsilano Since 1986</div>
+          <div class="pillar-count">7</div>
+          <div class="pillar-bar-track"><div class="pillar-bar-fill" style="background:var(--p3);width:100%"></div></div>
+        </div>
+        <div class="pillar-row">
+          <div class="pillar-dot" style="background:var(--p4)"></div>
+          <div class="pillar-name">Good Bottles Are Meant to Be Shared</div>
+          <div class="pillar-count">3</div>
+          <div class="pillar-bar-track"><div class="pillar-bar-fill" style="background:var(--p4);width:60%"></div></div>
+        </div>
+        <p class="text-xs mt8">Pillar 4 is lightest. Consider a second gifting post if corporate revenue grows.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Upcoming anchors -->
+  <div class="gap-20">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Upcoming Tier 1 &amp; 2 Anchors</span><span class="text-xs">Next 90 days</span></div>
+      <div class="card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0">
+        <div style="padding:16px 20px;border-right:1px solid var(--border)">
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">May</div><div class="anchor-date-day">1</div></div>
+            <div class="anchor-info"><div class="anchor-name">Mother's Day push begins</div><div class="anchor-channels">Blog · Reel · Email series · Window</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">May</div><div class="anchor-date-day">10</div></div>
+            <div class="anchor-info"><div class="anchor-name">Mother's Day</div><div class="anchor-channels">Email · IG · FB Event · In-store</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">May</div><div class="anchor-date-day">26</div></div>
+            <div class="anchor-info"><div class="anchor-name">BC Wine Month closes</div><div class="anchor-channels">Blog · Email closer · Carousel</div></div>
+            <span class="tier-badge tier-2">T2</span>
+          </div>
+        </div>
+        <div style="padding:16px 20px;border-right:1px solid var(--border)">
+          <div class="anchor-item">
+            <div class="anchor-date-box" style="background:#6B2737"><div class="anchor-date-mo">Jun</div><div class="anchor-date-day">1</div></div>
+            <div class="anchor-info"><div class="anchor-name">Postcard drops in mailboxes</div><div class="anchor-channels">Direct mail · IG · Email</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">Jun</div><div class="anchor-date-day">13</div></div>
+            <div class="anchor-info"><div class="anchor-name">FIFA opens at BC Place</div><div class="anchor-channels">Reel · Email · In-store</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">Jun</div><div class="anchor-date-day">28</div></div>
+            <div class="anchor-info"><div class="anchor-name">Greek Day on Broadway</div><div class="anchor-channels">Blog · Reel · Email · Full window</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">Jul</div><div class="anchor-date-day">1</div></div>
+            <div class="anchor-info"><div class="anchor-name">Canada Day + Contest Draw</div><div class="anchor-channels">Blog · Email · All-Canadian display</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">Jul</div><div class="anchor-date-day">11</div></div>
+            <div class="anchor-info"><div class="anchor-name">Khatsahlano Street Party</div><div class="anchor-channels">Blog · Reel · Window · A-frame</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+          <div class="anchor-item">
+            <div class="anchor-date-box"><div class="anchor-date-mo">Jul</div><div class="anchor-date-day">19</div></div>
+            <div class="anchor-info"><div class="anchor-name">FIFA World Cup Final</div><div class="anchor-channels">Reel · Email watch party guide</div></div>
+            <span class="tier-badge tier-1">T1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ BLOG CALENDAR ═══════════════════════════════ -->
+<div id="tab-blog" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Blog Content Calendar</span>
+    <span class="section-sub">19 posts · April 2026 – December 2026</span>
+  </div>
+
+  <div class="filter-bar">
+    <span class="text-xs" style="margin-right:4px">Filter:</span>
+    <button class="filter-btn active" onclick="filterBlog('all', this)">All posts</button>
+    <button class="filter-btn" onclick="filterBlog('status-overdue', this)" style="border-color:#E09090;color:var(--overdue)">Overdue</button>
+    <button class="filter-btn" onclick="filterBlog('status-draft-ready', this)">Draft Ready</button>
+    <button class="filter-btn" onclick="filterBlog('status-drafted', this)">Drafted</button>
+    <button class="filter-btn p1" onclick="filterBlog('pillar-1', this)">Pillar 1</button>
+    <button class="filter-btn p2" onclick="filterBlog('pillar-2', this)">Pillar 2</button>
+    <button class="filter-btn p3" onclick="filterBlog('pillar-3', this)">Pillar 3</button>
+    <button class="filter-btn p4" onclick="filterBlog('pillar-4', this)">Pillar 4</button>
+  </div>
+
+  <div class="blog-grid" id="blogGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════ CHANNEL MATRIX ═══════════════════════════════ -->
+<div id="tab-channels" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Master Channel Matrix</span>
+    <span class="section-sub">Every Tier 1 anchor · all channels · scroll right for full view</span>
+  </div>
+  <div class="matrix-wrapper">
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Anchor Moment</th>
+          <th>Blog</th>
+          <th>IG Reel</th>
+          <th>IG Carousel</th>
+          <th>Stories</th>
+          <th>Email</th>
+          <th>Facebook</th>
+          <th>Poster + Till</th>
+          <th>Postcard</th>
+        </tr>
+      </thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ IN-STORE ═══════════════════════════════ -->
+<div id="tab-instore" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">In-Store &amp; Physical Channel</span>
+    <span class="section-sub">Window · shelf cards · counter · A-frame</span>
+  </div>
+  <div class="grid-2">
+    <div>
+      <ul class="instore-list" id="instoreList"></ul>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Physical Channel Rules</span></div>
+        <div class="card-body">
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🖼️</span><div><strong>Posters are your in-store billboard.</strong><br><span class="text-sm">One message, one product, one reason to look twice. Mount near the relevant section or at the entrance for Tier 1 events. Design in Canva, print locally.</span></div></li>
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🖥️</span><div><strong>The till screen is your most captive audience.</strong><br><span class="text-sm">The customer is standing still, waiting to pay. That's the moment for a loyalty sign-up prompt, an event teaser, or a product they just walked past. Update for every Tier 1 anchor. Design in Canva — landscape 16:9.</span></div></li>
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🏷️</span><div><strong>Shelf cards earn the sale.</strong><br><span class="text-sm">Customer is standing in front of the bottle. 20 words on taste and occasion converts more than a price tag alone.</span></div></li>
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🅰️</span><div><strong>A-frame is for same-day impulse.</strong><br><span class="text-sm">Update at open. Game at 7 PM? The A-frame at 5 PM should say something about it.</span></div></li>
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🚫</span><div><strong>Don't activate everything for every event.</strong><br><span class="text-sm">Tier 1 anchors get the full set: poster + till + shelf + counter. Tier 2: till + shelf cards. Tier 3: nothing physical. Restraint is what makes the Tier 1 moments land.</span></div></li>
+            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🎨</span><div><strong>Canva templates for everything.</strong><br><span class="text-sm">Same fonts, same palette as digital. The store and the Instagram should look like they know each other. Build a poster template and a till template — lock them and reuse.</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card gap-20">
+        <div class="card-header"><span class="card-title">Format Guide</span></div>
+        <div class="card-body">
+          <table style="width:100%;font-size:12px;border-collapse:collapse">
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Poster</td>
+              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1 only · print 1 week ahead · A3 or A2 · Canva → local print</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Till screen</td>
+              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · update day-of · 16:9 landscape · Canva → USB or direct</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Shelf cards</td>
+              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · 2 day lead time · hand-written or printed</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Counter card</td>
+              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · 1 week lead time · A5 tent card</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">A-frame</td>
+              <td style="padding:8px 0;color:var(--text-secondary)">All tiers · same day · dry-erase or printed insert</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ POSTCARDS ═══════════════════════════════ -->
+<div id="tab-postcards" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Direct Mail &amp; Postcard Channel</span>
+    <span class="section-sub">Bi-annual · Grand Crew loyalty members</span>
+  </div>
+
+  <div class="deadline-flag">
+    <div class="deadline-icon">⚠️</div>
+    <div class="deadline-text"><strong>Print deadline: May 20, 2026</strong> — required for June 1–5 delivery. You have 23 days. Start the design and list pull this week.</div>
+  </div>
+
+  <!-- Campaign header card -->
+  <div class="postcard-campaign">
+    <div class="pc-eyebrow">Postcard 1 of 2 · June 2026</div>
+    <div class="pc-title">Win a $250 Gift Card — Summer Is Here</div>
+    <div class="pc-sub">Grand Crew loyalty members + new sign-ups through May 31</div>
+    <div class="pc-stats">
+      <div><div class="pc-stat-val">$250</div><div class="pc-stat-label">Gift card prize</div></div>
+      <div><div class="pc-stat-val">Jun 30</div><div class="pc-stat-label">Entry close</div></div>
+      <div><div class="pc-stat-val">Jul 1</div><div class="pc-stat-label">Draw date (Canada Day)</div></div>
+      <div><div class="pc-stat-val">4×6"</div><div class="pc-stat-label">Card format</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- Entry mechanic -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Entry Mechanic — Choose One</span></div>
+      <div class="card-body">
+        <div class="mechanic-options">
+          <div class="mechanic-card preferred">
+            <div class="preferred-flag">★ Recommended</div>
+            <div class="mechanic-label">Option A — In-Store</div>
+            <div class="mechanic-desc">Bring the postcard in to enter. Drives foot traffic. Simple to administer.</div>
+          </div>
+          <div class="mechanic-card">
+            <div class="mechanic-label">Option B — Online</div>
+            <div class="mechanic-desc">Squarespace landing page. Builds digital list. Requires page build.</div>
+          </div>
+          <div class="mechanic-card">
+            <div class="mechanic-label">Option C — Both</div>
+            <div class="mechanic-desc">Max entries. Slightly more admin to reconcile.</div>
+          </div>
+        </div>
+        <p class="text-xs mt8">BC regulations require "no purchase necessary to enter" language. Confirm before print.</p>
+      </div>
+    </div>
+
+    <!-- Digital pairing -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Digital Pairing — Same Week as Card Drop</span></div>
+      <div class="card-body">
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 0;font-weight:600;color:var(--text-primary);width:110px">Stories</td>
+            <td style="padding:8px 0;color:var(--text-secondary)">"We just dropped something in the mail for our Grand Crew members. Check your mailbox."</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">IG Feed</td>
+            <td style="padding:8px 0;color:var(--text-secondary)">Photo of postcard + contest announcement</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Email</td>
+            <td style="padding:8px 0;color:var(--text-secondary)">"Your card is in the mail. Here is how to enter." — to loyalty list</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">In-store</td>
+            <td style="padding:8px 0;color:var(--text-secondary)">Counter card: "Grand Crew members — your summer postcard is in the mail."</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Facebook</td>
+            <td style="padding:8px 0;color:var(--text-secondary)">Cross-post IG + Event for June 30 close date</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Production checklist -->
+  <div class="card gap-20">
+    <div class="card-header">
+      <span class="card-title">Production Checklist</span>
+      <span class="text-xs">Checks saved in your browser</span>
+    </div>
+    <div class="card-body">
+      <ul class="checklist" id="postcardChecklist">
+        <li><input type="checkbox" id="pc1" onchange="saveChecklist()"><label for="pc1">Pull Grand Crew mailing list from Barnet/Bottlecapps — confirm all addresses complete</label></li>
+        <li><input type="checkbox" id="pc2" onchange="saveChecklist()"><label for="pc2">Decide entry mechanic: in-store / online / both</label></li>
+        <li><input type="checkbox" id="pc3" onchange="saveChecklist()"><label for="pc3">If online: build Squarespace entry landing page with name + email form</label></li>
+        <li><input type="checkbox" id="pc4" onchange="saveChecklist()"><label for="pc4">Design postcard front in Canva (hero bottle image, headline, store address)</label></li>
+        <li><input type="checkbox" id="pc5" onchange="saveChecklist()"><label for="pc5">Design postcard back in Canva (personalised name field, contest mechanics, fine print)</label></li>
+        <li><input type="checkbox" id="pc6" onchange="saveChecklist()"><label for="pc6">Proofread: contest dates, entry instructions, return address, LCRB fine print</label></li>
+        <li><input type="checkbox" id="pc7" onchange="saveChecklist()"><label for="pc7">BC LCRB compliance check — "no purchase necessary to enter" included</label></li>
+        <li><input type="checkbox" id="pc8" onchange="saveChecklist()"><label for="pc8">Get print quote from vendor (Canada Post Addressed Admail or local print house)</label></li>
+        <li><input type="checkbox" id="pc9" onchange="saveChecklist()"><label for="pc9">Confirm mailing list count for print run quantity</label></li>
+        <li><input type="checkbox" id="pc10" onchange="saveChecklist()"><label for="pc10"><strong>Send to print — deadline May 20 for June 1 delivery</strong></label></li>
+        <li><input type="checkbox" id="pc11" onchange="saveChecklist()"><label for="pc11">Build Instagram post announcing contest (schedule for same week as card drops)</label></li>
+        <li><input type="checkbox" id="pc12" onchange="saveChecklist()"><label for="pc12">Build email to loyalty list (schedule for same week as card drops)</label></li>
+        <li><input type="checkbox" id="pc13" onchange="saveChecklist()"><label for="pc13">Set calendar reminder: close entries June 30 · draw July 1</label></li>
+        <li><input type="checkbox" id="pc14" onchange="saveChecklist()"><label for="pc14">Photograph the draw for Instagram Stories</label></li>
+        <li><input type="checkbox" id="pc15" onchange="saveChecklist()"><label for="pc15">Notify winner + arrange gift card pickup or delivery</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- November placeholder -->
+  <div class="card gap-20" style="border-style:dashed;opacity:0.7">
+    <div class="card-header">
+      <span class="card-title">Postcard 2 of 2 — November 2026</span>
+      <span class="badge badge-to-draft">Plan in September</span>
+    </div>
+    <div class="card-body">
+      <p class="text-sm">Target delivery November 1–7, 2026 — positions Broadway before customers make any holiday plans. Highest-value send of the year. Audience: all active Grand Crew members as of October 31. Likely offer: holiday gift bundles, early access, or second gift card draw. <strong>Brief this campaign in the September quarterly review.</strong></p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════ MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal" id="modal">
+    <div class="modal-top" id="modalTop"></div>
+    <div class="modal-header">
+      <div>
+        <div id="modalTitle" class="modal-title"></div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="modalBadges"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────
+const pillars = {
+  1: { name: "Not Every Bottle, The Right One", color: "#7A2533" },
+  2: { name: "Without the Pretension",          color: "#1A5F7A" },
+  3: { name: "Kitsilano Since 1986",             color: "#2D6B2D" },
+  4: { name: "Good Bottles Are Meant to Be Shared", color: "#B8892E" }
+};
+
+const statusInfo = {
+  "live":        { label: "Live",        cls: "badge-live" },
+  "draft-ready": { label: "Draft Ready", cls: "badge-draft-ready" },
+  "drafted":     { label: "Drafted",     cls: "badge-drafted" },
+  "overdue":     { label: "Overdue",     cls: "badge-overdue" },
+  "to-draft":    { label: "To Draft",    cls: "badge-to-draft" }
+};
+
+const posts = [
+  { id:1, title:"Wine and Spirits Delivery in Kitsilano", date:"Apr 21, 2026", pillar:3, status:"live",
+    keyword:"wine delivery Kitsilano / liquor delivery Vancouver same day",
+    desc:"Establishes delivery as a core service. Province-wide delivery positioning. SEO anchor post for local search.",
+    tone:"Informational and local. We've been here, we deliver, here's how.",
+    spinoffs:["Instagram static post","GBP services update"],
+    inventory:null, note:null },
+
+  { id:2, title:"BC Wine in Kitsilano: Why We Stay Local", date:"Apr 27, 2026", pillar:3, status:"draft-ready",
+    keyword:"BC wine Kitsilano / Okanagan wine Vancouver",
+    desc:"Makes the case for BC VQA as a first choice, not a consolation. Names specific producers we stock. Ties into BC Wine Month (all of April).",
+    tone:"'We have been selling Okanagan wine since before it was fashionable to do so.'",
+    spinoffs:["Instagram carousel (3 BC bottles)","Email newsletter mention","In-store BC VQA shelf card"],
+    inventory:null, note:"Publish this week." },
+
+  { id:3, title:"Grand Crew: How Our Loyalty Program Works", date:"Apr 27, 2026", pillar:4, status:"draft-ready",
+    keyword:"Broadway Beer Wine Spirits loyalty program / wine loyalty Vancouver",
+    desc:"Clear, plain-language explanation of Grand Crew. What you earn, how you redeem, why we built it. Not promotional in tone — factual and direct.",
+    tone:"'We built this because our regulars deserved something back. Here is how it works.'",
+    spinoffs:["Instagram Stories (swipe-up link)","Email dedicated send","In-store counter card"],
+    inventory:null, note:"Publish this week." },
+
+  { id:4, title:"Corporate Wine Gifts in Vancouver: What We Actually Do", date:"May 1, 2026", pillar:4, status:"to-draft",
+    keyword:"corporate wine gifts Vancouver / liquor gift boxes corporate Vancouver",
+    desc:"Blue ocean post. No competitor has a dedicated, front-facing corporate gifting page. Cover: custom gift wrapping, local artist cards, province-wide delivery, corporate account setup, lead time. Speak directly to the office manager or event planner doing the search.",
+    tone:"'Here is what we do, here is what it costs, here is how to order.'",
+    spinoffs:["Instagram carousel (gift box photos)","Email to corporate segment","In-store signage near gift wrap station"],
+    inventory:null, note:"Zero local competition for 'corporate liquor gift Vancouver'. This post wins that phrase." },
+
+  { id:5, title:"Mother's Day Wine Guide 2026: The Bottles We'd Actually Bring", date:"May 1, 2026", pillar:1, status:"drafted",
+    keyword:"Mother's Day wine gift Vancouver / best wine for Mother's Day Kitsilano",
+    desc:"Full Tier 1 anchor build. 7 bottles selected from live POS inventory. Custom gift wrapping and local artist Mother's Day cards featured.",
+    tone:"Personal and specific. Real bottles, real prices, real opinions.",
+    spinoffs:["Instagram Reel (gift wrapping in store)","3-email series (Apr 28, May 5, May 9)","Facebook Event","Front window display"],
+    inventory:"Blue Mountain Brut Gold Label $36.99 · Taittinger 375ml $56.99 · Moët Gold $99.99 · Gray Monk Latitude Fifty Rosé $18.99 · Joie Farm Rosé $31.99 · Clos du Soleil Lumière Rosé $29.99 · Painted Rock Rosé $39.99",
+    note:"Ready to publish May 1." },
+
+  { id:6, title:"Malbec World Day: What Argentina Gets Right", date:"Apr 17, 2026", pillar:2, status:"overdue",
+    keyword:"Malbec World Day / best Malbec under $30 Vancouver",
+    desc:"Why Malbec punches above its price point. 3 bottles from the shelf. Written like the Baudry post — producer story, plain language, opinion stated clearly.",
+    tone:"'Malbec gets dismissed as a crowd-pleaser. That dismissal is wrong.'",
+    spinoffs:["Instagram carousel (3 Malbecs by price tier)","Email newsletter mention"],
+    inventory:null, note:"OVERDUE — was April 17. Draft and publish immediately." },
+
+  { id:7, title:"BC Wine Month: The Bottles We Keep Coming Back To", date:"May 26, 2026", pillar:3, status:"to-draft",
+    keyword:"BC Wine Month 2026 / best BC wine to buy Vancouver",
+    desc:"Wrap-up of BC Wine Month. The bottles that moved, the ones staff loved, the hidden gems. Data-informed — pull top-sellers from Barnet before drafting.",
+    tone:"'We have been stocking BC wine since before it had a Wine Month. Here is what we actually reached for this April.'",
+    spinoffs:["Email closer (BC Wine Month wrap)","Instagram carousel","In-store BC display breakdown"],
+    inventory:"Pull top-selling BC bottles from Barnet before drafting.", note:null },
+
+  { id:8, title:"Chillable Reds: The Summer Wine Nobody Is Talking About", date:"Jun 15, 2026", pillar:2, status:"to-draft",
+    keyword:"chillable red wine Vancouver / light red wine for summer",
+    desc:"Makes the case for light, chillable reds as the most underrated summer drink. Gamay, Pinot Noir, Schiava, Frappato.",
+    tone:"'Everyone grabs a rosé in July. We think you're leaving something better on the shelf.'",
+    spinoffs:["Instagram Reel (shelf walk)","Instagram Stories poll ('rosé or chillable red?')","Email feature"],
+    inventory:"Build to 10–12 bottles before publishing. Confirm Gamay, light Loire reds, and BC Pinot selections in stock. In-store signage recommended.", note:null },
+
+  { id:9, title:"Greek Day on Broadway: What We're Drinking This Year", date:"Jun 22, 2026", pillar:3, status:"to-draft",
+    keyword:"Greek Day Vancouver 2026 / Greek wine Vancouver",
+    desc:"Ties the store's location to the neighbourhood's biggest day. Feature Assyrtiko, Xinomavro, Agiorgitiko, and ouzo. This is an inventory coordination moment, not just a content moment.",
+    tone:"'One hundred thousand people walk past our door on Greek Day. We have been getting ready.'",
+    spinoffs:["Instagram Reel (Greek wine shelf tour)","Email anchor send","In-store Greek wine display","Facebook Event"],
+    inventory:"Source Assyrtiko, Xinomavro, Agiorgitiko + small ouzo selection by May 1. Prepare bilingual front window signage (English/Greek).", note:null },
+
+  { id:10, title:"Canada Day Bottles: What We're Drinking on the 1st", date:"Jun 29, 2026", pillar:1, status:"to-draft",
+    keyword:"Canada Day wine Vancouver / Canadian whisky recommendation",
+    desc:"All-Canadian shelf feature. BC wine, Canadian whisky, Canadian craft beer. Short, punchy, seasonal. Leads with the one bottle we'd pick if we could only have one.",
+    tone:"'Every store has a Canadian whisky display on July 1st. Ours has a point of view.'",
+    spinoffs:["Instagram carousel (3 Canadian picks)","Email feature","In-store Canada Day display"],
+    inventory:null, note:null },
+
+  { id:11, title:"World Cup Watching: The Wine We'd Pick for Every Match", date:"Jul 6, 2026", pillar:4, status:"to-draft",
+    keyword:"World Cup Vancouver wine / what to drink World Cup 2026",
+    desc:"Playful, high share-potential. Pair a wine or spirit to the country playing at BC Place. Australia = Shiraz. Canada = BC VQA + Canadian whisky. New Zealand = Marlborough Sauv Blanc.",
+    tone:"Fun but specific. Real bottles, real prices — not hypotheticals.",
+    spinoffs:["Instagram carousel (most shareable post of the year)","Email feature","In-store World Cup display"],
+    inventory:null, note:"Coordinates with FIFA World Cup anchor content Jun 11–Jul 7." },
+
+  { id:12, title:"Khatsahlano Weekend: What We're Pouring This July", date:"Jul 13, 2026", pillar:3, status:"to-draft",
+    keyword:"Khatsahlano 2026 / West 4th street festival Kitsilano",
+    desc:"150,000 people on West 4th. What we stocked for the weekend, what moved, what we're still reaching for in the heat of July.",
+    tone:"'Khatsahlano is ours. We have been on this side of the hill for 40 years.'",
+    spinoffs:["Instagram Reel (post-event recap)","Email","In-store summer display"],
+    inventory:null, note:null },
+
+  { id:13, title:"Grower Champagne: Why the Small Houses Win", date:"Aug 3, 2026", pillar:2, status:"to-draft",
+    keyword:"grower Champagne Vancouver / best Champagne under $80 Vancouver",
+    desc:"Makes the case for grower-producer Champagne over the big houses. Names specific bottles we stock. Producer story, terroir plain-spoken.",
+    tone:"'Moët is fine. Here is what we actually reach for.'",
+    spinoffs:["Instagram carousel","Email feature"],
+    inventory:null, note:"Pairs with New Year's Eve Champagne post later in the year." },
+
+  { id:14, title:"The Fall Okanagan Round-Up: What's Worth Knowing This Harvest", date:"Sep 14, 2026", pillar:3, status:"to-draft",
+    keyword:"Fall Okanagan Wine Festival 2026 / Okanagan harvest wine Vancouver",
+    desc:"The new vintages landing on the shelf. The producers we visited. The bottles worth pre-ordering.",
+    tone:"'Harvest is the most exciting time of year in the Okanagan. Here is what it means for our shelf.'",
+    spinoffs:["Email anchor (Fall Okanagan)","Instagram carousel (new arrivals)","In-store harvest display"],
+    inventory:"Confirm Fall Okanagan Wine Festival dates when announced.", note:null },
+
+  { id:15, title:"Thanksgiving Wines: What Actually Works with the Table", date:"Oct 5, 2026", pillar:1, status:"to-draft",
+    keyword:"Thanksgiving wine pairing Vancouver / best wine for turkey Vancouver",
+    desc:"Not 'any Pinot Noir works' — specific bottles for specific situations. The table wine, the gravy wine, the one bottle that works with everything.",
+    tone:"'There are a hundred Thanksgiving wine guides online. Here is the one from the shop that has been on this block since 1986.'",
+    spinoffs:["Instagram carousel","Email anchor (Thanksgiving week)","In-store display","Facebook Event (order-ahead)"],
+    inventory:null, note:"Tier 1 anchor tie-in: Canadian Thanksgiving October 12." },
+
+  { id:16, title:"Halloween Wine: Orange Wine for Orange Season", date:"Oct 26, 2026", pillar:2, status:"to-draft",
+    keyword:"orange wine Vancouver / Halloween wine pairing",
+    desc:"Orange wine is literally orange. Natural wine, skin-contact, spooky labels. Light in tone, specific in bottles, earns shares for the visual hook.",
+    tone:"'Orange wine for orange season. This is not a coincidence.'",
+    spinoffs:["Instagram Reel (orange bottle lineup)","Stories countdown to Halloween","Email mention"],
+    inventory:null, note:"Tier 1 anchor tie-in: Halloween October 31." },
+
+  { id:17, title:"Beaujolais Nouveau Night: What to Expect (And What to Bring)", date:"Nov 16, 2026", pillar:3, status:"to-draft",
+    keyword:"Beaujolais Nouveau Vancouver 2026 / Beaujolais Nouveau release date",
+    desc:"The one night-of-the-year post. The history, the ritual, the bottles. And whether we are hosting the midnight pour.",
+    tone:"'Every year we say Beaujolais Nouveau is silly. Every year we pour it at midnight anyway.'",
+    spinoffs:["Instagram Reel (first pour)","Email anchor send","In-store event signage","Facebook Event"],
+    inventory:null, note:"Confirm licensing for potential midnight pour event." },
+
+  { id:18, title:"New Year's Eve Sparkling: Beyond the Safe Choice", date:"Dec 15, 2026", pillar:1, status:"to-draft",
+    keyword:"New Year's Eve sparkling wine Vancouver / best Champagne for New Year's Vancouver",
+    desc:"Champagne, Cremant, Cava, Prosecco, BC sparkling — the right bottle for the right budget. Named bottles, named prices, named opinions.",
+    tone:"'You are going to be asked what to bring for New Year's Eve. Here is what we tell everyone who asks us.'",
+    spinoffs:["Instagram Reel (sparkling lineup)","Email series (Dec 27, 29, 30)","In-store Champagne display from Dec 15","Facebook Event for NYE pickup"],
+    inventory:null, note:"Tier 1 anchor: New Year's Eve December 31." },
+
+  { id:19, title:"Sons of Vancouver: The BC Distillery We Keep Coming Back To", date:"Nov 15, 2026", pillar:2, status:"to-draft",
+    keyword:"Sons of Vancouver whisky / BC craft distillery Vancouver / BC spirits Kitsilano",
+    desc:"The spirits equivalent of the Baudry post. Sons of Vancouver, North Vancouver — their story, what makes their approach different, the bottles we stock.",
+    tone:"'They started with one still and a very clear idea of what BC spirits should taste like.'",
+    spinoffs:["Instagram Reel (distillery feature)","Email mention","In-store spirits spotlight display"],
+    inventory:"Confirm Sons of Vancouver SKUs in Barnet: Anniversary Bourbon Whisky, Amaretto, No. 8 Vodka.",
+    note:"Consider reaching out for a staff tasting or producer visit before publishing." }
+];
+
+const matrixRows = [
+  { anchor:"BC Wine Month (Apr)", blog:"Post 2: BC Wine in Kitsilano", reel:"Weekly Okanagan producer pick", carousel:"3 BC bottles by style", stories:"Daily BC wine feature", email:"Weekly staff pick + Apr 30 closer", fb:"Cross-post + Events", instore:"Window: BC VQA map · Shelf cards", pc:"—" },
+  { anchor:"Malbec World Day (Apr 17)", blog:"Post 6: What Argentina Gets Right", reel:"—", carousel:"3 Malbecs by price tier", stories:"Countdown + day-of", email:"Bi-weekly newsletter mention", fb:"Cross-post", instore:"Shelf cluster · Counter card · A-frame", pc:"—" },
+  { anchor:"Mother's Day (May 10)", blog:"Post 5: Wine Guide (May 1)", reel:"Gift wrapping in store", carousel:"Rosé + sparkling picks", stories:"3-day countdown", email:"3-email series: Apr 28, May 5, May 9", fb:"Cross-post + Event", instore:"Window: gift display + local artist cards", pc:"—" },
+  { anchor:"Greek Day (Jun 28)", blog:"Post 9: Greek Day Guide (Jun 22)", reel:"Greek wine shelf tour", carousel:"3 Greek bottles", stories:"Countdown week-of + day-of", email:"Pre-event blast Jun 24", fb:"Cross-post + Event", instore:"Full window: bilingual signage, Greek wine + ouzo display", pc:"—" },
+  { anchor:"FIFA Canada (Jun 18, 24)", blog:"Post 11 tie-in", reel:"Flexible match content", carousel:"—", stories:"Day-of match countdown", email:"—", fb:"Cross-post", instore:"Counter: 'Canada plays today' · A-frame", pc:"—" },
+  { anchor:"June Postcard Drop", blog:"—", reel:"—", carousel:"Contest announcement post", stories:"'Check your mailbox'", email:"'Your card is in the mail'", fb:"Cross-post + Event (close Jun 30)", instore:"Counter card: enter to win", pc:"$250 Gift Card contest · all Grand Crew members" },
+  { anchor:"Canada Day (Jul 1)", blog:"Post 10: Canada Day Bottles (Jun 29)", reel:"—", carousel:"All-Canadian shelf", stories:"Day-of", email:"Canadian whisky carousel", fb:"Cross-post + Event", instore:"Window: full Canadian display", pc:"—" },
+  { anchor:"FIFA Round of 16 (Jul 7)", blog:"Post 11: World Cup Wine by Country", reel:"Match day wine guide", carousel:"Country-by-country pairings", stories:"Day-of", email:"Culmination email", fb:"Cross-post", instore:"Flexible match-day display", pc:"—" },
+  { anchor:"Khatsahlano (Jul 11)", blog:"Post 12: Khatsahlano Weekend (Jul 13)", reel:"Pre-event + post recap", carousel:"Summer wine picks", stories:"Day-of coverage", email:"Pre-event email", fb:"Cross-post + Event", instore:"Window: 'Cold bottles inside' · A-frame", pc:"—" },
+  { anchor:"Canadian Thanksgiving (Oct 12)", blog:"Post 15: Thanksgiving Wines (Oct 5)", reel:"Turkey wine guide", carousel:"3 picks", stories:"Countdown", email:"Turkey wines + order-ahead", fb:"Cross-post + Event", instore:"Counter: Thanksgiving display + gift wrap", pc:"—" },
+  { anchor:"Halloween (Oct 31)", blog:"Post 16: Orange Wine (Oct 26)", reel:"Orange bottle lineup", carousel:"—", stories:"Countdown week + day-of", email:"Newsletter feature", fb:"Cross-post", instore:"Window: orange wine + spooky labels", pc:"—" },
+  { anchor:"Beaujolais Nouveau (Nov 19)", blog:"Post 17: What to Expect (Nov 16)", reel:"First pour", carousel:"Beaujolais primer", stories:"Day-of event coverage", email:"Anchor email + event details", fb:"Cross-post + Event", instore:"Window: 'Le Beaujolais est arrivé' · A-frame", pc:"—" },
+  { anchor:"Holiday Season (Dec 1–24)", blog:"—", reel:"Every Friday", carousel:"Gift bundles rolling", stories:"Twice-weekly", email:"Weekly: Dec 1 launch → Dec 20", fb:"Cross-post + Events", instore:"Window: full gift display · counter gift wrap station · pre-made bundles", pc:"—" },
+  { anchor:"New Year's Eve (Dec 31)", blog:"Post 18: NYE Sparkling (Dec 15)", reel:"Sparkling wine lineup", carousel:"Budget guide", stories:"Countdown", email:"Series: Dec 27, 29, 30", fb:"Cross-post + Event", instore:"Window: Champagne display from Dec 15 · A-frame", pc:"—" },
+];
+
+const instoreItems = [
+  { date:"All April", tier:1, event:"BC Wine Month", formats:["poster","till","shelf","counter"],
+    detail:"Poster: BC VQA map of Okanagan wine regions, mounted near BC section. Shelf cards: producer, region, one-line tasting note on each BC bottle. Counter card: 'Ask us about BC wine. We've been selling it since before it was cool.' Till screen: 'BC Wine Month — ask us for our top picks.'" },
+  { date:"Apr 17", tier:1, event:"Malbec World Day", formats:["till","shelf","counter","aframe"],
+    detail:"Shelf card cluster: 3 Malbecs with hand-written notes. Counter card: 'Today is Malbec World Day. Here are three worth knowing.' A-frame: 'Malbec World Day — three picks inside.' Till screen: 'Today is Malbec World Day — 3 bottles worth knowing.'" },
+  { date:"May 1–10", tier:1, event:"Mother's Day", formats:["poster","till","shelf","counter","aframe"],
+    detail:"Poster: rosé and Champagne gift display with local artist Mother's Day cards. Shelf: gift-wrapped bottles with price tags. Counter: 'Custom gift wrapping available — cards by a local artist.' A-frame: 'Mother's Day gifts wrapped in-store. No assembly required.' Till screen: 'Gift wrapping available — local artist cards included.'" },
+  { date:"By May 1", tier:1, event:"Greek wine order deadline", formats:["shelf"],
+    detail:"Operations task: source Assyrtiko, Xinomavro, Agiorgitiko + small ouzo selection by May 1. Prepare bilingual English/Greek poster design for Greek Day. Build shelf section before June 22." },
+  { date:"Jun 1–5", tier:1, event:"June Postcard drops", formats:["till","counter"],
+    detail:"Counter card: 'Grand Crew members — your summer postcard is in the mail. Enter to win $250.' Till screen: 'Grand Crew members — check your mailbox. Enter to win a $250 gift card.'" },
+  { date:"Jun 21–28", tier:1, event:"Greek Day on Broadway", formats:["poster","till","shelf","counter","aframe"],
+    detail:"Poster: Greek wine + ouzo display, flag colours, bilingual text — 'Kalos Orisate / Welcome to Broadway'. Shelf: hand-written producer notes on Greek section. Counter: 'Greek Day is our favourite day of the year.' A-frame: 'Greek wines inside. Opa.' Till screen: 'Happy Greek Day — we have Assyrtiko, Xinomavro, and ouzo.'" },
+  { date:"Jun 29–Jul 1", tier:1, event:"Canada Day", formats:["poster","till","counter","aframe"],
+    detail:"Poster: all-Canadian display (BC wine, Canadian whisky, craft beer). Counter: 'Everything on the Canada Day shelf is made here.' A-frame: 'Canadian whisky. BC wine. All in.' Till screen: 'Happy Canada Day — today's shelf is all-Canadian.'" },
+  { date:"Jun 18 & 24", tier:1, event:"FIFA Canada Matches", formats:["till","counter","aframe"],
+    detail:"Till screen: 'Canada plays today — BC VQA on the shelf.' Counter card: 'Canada plays today. We suggest drinking BC.' A-frame: updated for kick-off time." },
+  { date:"Jul 11", tier:1, event:"Khatsahlano Street Party", formats:["poster","till","counter","aframe"],
+    detail:"Poster: summer wine display, mounted near entrance. A-frame: '150,000 people on West 4th. The cold wine is in here.' Counter: chilled rosé and summer whites at front of store by 9 AM. Till screen: 'Welcome Khatsahlano visitors — cold bottles this way.'" },
+  { date:"Oct 1–12", tier:1, event:"Canadian Thanksgiving", formats:["poster","till","shelf","counter"],
+    detail:"Poster: Thanksgiving wine picks. Shelf: holiday pairing cards. Counter: 'Gift wrapping available.' Till screen: 'Thanksgiving picks — ask us for pairing help.'" },
+  { date:"Oct 26–31", tier:1, event:"Halloween / Orange Wine", formats:["poster","till","shelf","aframe"],
+    detail:"Poster: orange wine and natural wine with spooky labels. Shelf: 'Orange wine for orange season' section card. A-frame: 'Orange wine. It's literally orange.' Till screen: 'Orange wine for orange season — ask us.'" },
+  { date:"Nov 1–19", tier:1, event:"Beaujolais Nouveau", formats:["poster","till","counter","aframe"],
+    detail:"Poster: 'Le Beaujolais Nouveau est arrivé' — classic typography. Counter: event details for midnight pour (if hosting). A-frame: 'Beaujolais Nouveau. Tonight.' (Nov 19). Till screen: 'Beaujolais Nouveau is here — the one night of the year.'" },
+  { date:"Nov 28–Dec 24", tier:1, event:"Holiday Season", formats:["poster","till","shelf","counter","aframe"],
+    detail:"Poster dressed by Nov 28 — full gift display. Pre-made gift bundles at $50/$75/$100/$150/$200. Counter gift wrapping station visible from entrance. A-frame updated weekly with featured bundle. Till screen: 'Custom gift wrapping available — from $50' (update weekly). Nothing improvised in December." },
+  { date:"Dec 15–31", tier:1, event:"New Year's Eve Champagne", formats:["poster","till","counter","aframe"],
+    detail:"Poster: Champagne and sparkling wine feature from Dec 15. Counter: 'New Year's Eve. We have everything you need.' A-frame: 'Champagne. Cremant. BC Sparkling. All chilled.' Till screen: 'New Year's Eve Champagne — chilled and ready.'" },
+];
+
+// ─── RENDER BLOG GRID ────────────────────────────────────────────────────
+function renderBlog(filter) {
+  const grid = document.getElementById('blogGrid');
+  grid.innerHTML = '';
+  posts.forEach(p => {
+    const inPillar = filter.startsWith('pillar-') ? ('pillar-'+p.pillar === filter) : true;
+    const inStatus = filter.startsWith('status-') ? ('status-'+p.status === filter) : true;
+    const show = filter === 'all' ? true : (inPillar && inStatus);
+    if (!show) return;
+
+    const pColor = pillars[p.pillar].color;
+    const sInfo = statusInfo[p.status];
+
+    const card = document.createElement('div');
+    card.className = 'blog-card';
+    card.onclick = () => openModal(p.id);
+    card.innerHTML = `
+      <div class="blog-card-top" style="background:${pColor}"></div>
+      <div class="blog-card-body">
+        <div class="blog-card-meta">
+          <span class="blog-num">#${String(p.id).padStart(2,'0')}</span>
+          <span class="badge ${sInfo.cls}">${sInfo.label}</span>
+        </div>
+        <div class="blog-card-title">${p.title}</div>
+        <div class="blog-card-date">${p.date}</div>
+        <span class="blog-card-keyword">${p.keyword}</span>
+        <div class="blog-card-footer">
+          <span class="pillar-badge pillar-${p.pillar}">Pillar ${p.pillar}</span>
+          <span class="expand-hint">View details →</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function filterBlog(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBlog(filter);
+}
+
+// ─── RENDER MATRIX ───────────────────────────────────────────────────────
+function renderMatrix() {
+  const tbody = document.getElementById('matrixBody');
+  matrixRows.forEach(r => {
+    const tr = document.createElement('tr');
+    const cell = v => `<td>${v && v !== '—' ? `<span class="matrix-dot"></span><span class="cell-content">${v}</span>` : `<span class="cell-empty">—</span>`}</td>`;
+    tr.innerHTML = `<td>${r.anchor}</td>${cell(r.blog)}${cell(r.reel)}${cell(r.carousel)}${cell(r.stories)}${cell(r.email)}${cell(r.fb)}${cell(r.instore)}${cell(r.pc)}`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── RENDER IN-STORE ─────────────────────────────────────────────────────
+function renderInstore() {
+  const list = document.getElementById('instoreList');
+  const fmtMap = {
+    poster:  { cls:'fc-poster',  label:'Poster' },
+    till:    { cls:'fc-till',    label:'Till Screen' },
+    shelf:   { cls:'fc-shelf',   label:'Shelf Cards' },
+    counter: { cls:'fc-counter', label:'Counter Card' },
+    aframe:  { cls:'fc-aframe',  label:'A-Frame' }
+  };
+  instoreItems.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'instore-item';
+    const fmtChips = item.formats.map(f => `<span class="format-chip ${fmtMap[f].cls}">${fmtMap[f].label}</span>`).join('');
+    li.innerHTML = `
+      <div class="instore-date"><div class="instore-date-label">${item.date}</div></div>
+      <div class="instore-dot-wrap"><div class="instore-dot tier1"></div></div>
+      <div class="instore-content">
+        <div class="instore-event-name">${item.event}</div>
+        <div class="instore-formats">${fmtChips}</div>
+        <div class="instore-detail">${item.detail}</div>
+      </div>`;
+    list.appendChild(li);
+  });
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────
+function openModal(id) {
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  const pColor = pillars[p.pillar].color;
+  const sInfo = statusInfo[p.status];
+
+  document.getElementById('modalTop').style.background = pColor;
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalBadges').innerHTML =
+    `<span class="badge ${sInfo.cls}">${sInfo.label}</span>
+     <span class="pillar-badge pillar-${p.pillar}">Pillar ${p.pillar} — ${pillars[p.pillar].name}</span>`;
+
+  let body = '';
+
+  if (p.status === 'overdue') {
+    body += `<div class="alert-box red">⚠️ This post was due ${p.date}. Draft and publish immediately.</div>`;
+  }
+  if (p.note && p.status !== 'overdue') {
+    body += `<div class="alert-box">📌 ${p.note}</div>`;
+  }
+
+  body += `<div class="modal-section">
+    <div class="modal-label">Publish Date</div>
+    <div class="modal-value">${p.date}</div>
+  </div>
+  <div class="modal-section">
+    <div class="modal-label">SEO Target Keywords</div>
+    <div class="modal-value">${p.keyword}</div>
+  </div>
+  <div class="modal-section">
+    <div class="modal-label">Description</div>
+    <div class="modal-value">${p.desc}</div>
+  </div>
+  <div class="modal-section">
+    <div class="modal-label">Tone Reference</div>
+    <div class="modal-value tone">${p.tone}</div>
+  </div>`;
+
+  if (p.inventory) {
+    body += `<div class="modal-section">
+      <div class="modal-label">Inventory / Prep Note</div>
+      <div class="modal-value">${p.inventory}</div>
+    </div>`;
+  }
+
+  body += `<div class="modal-section">
+    <div class="modal-label">Channel Spin-Offs</div>
+    <div class="modal-tags">${p.spinoffs.map(s => `<span class="modal-tag">${s}</span>`).join('')}</div>
+  </div>`;
+
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ─── TABS ────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ─── CHECKLIST PERSISTENCE ───────────────────────────────────────────────
+function saveChecklist() {
+  const state = {};
+  for (let i = 1; i <= 15; i++) {
+    const el = document.getElementById('pc' + i);
+    if (el) state['pc' + i] = el.checked;
+  }
+  localStorage.setItem('bws_postcard_checklist', JSON.stringify(state));
+}
+
+function loadChecklist() {
+  const saved = localStorage.getItem('bws_postcard_checklist');
+  if (!saved) return;
+  const state = JSON.parse(saved);
+  Object.entries(state).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.checked = v;
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+renderBlog('all');
+renderMatrix();
+renderInstore();
+loadChecklist();
+</script>
+</body>
+</html>
