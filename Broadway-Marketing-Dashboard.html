@@ -335,6 +335,26 @@ header {
 .tw-num.gold   { background: var(--blue); }
 .tw-label { font-weight:700; color:var(--text-primary); font-size:15px; letter-spacing:-0.01em; }
 .tw-desc  { color:var(--text-secondary); font-size:12px; margin-top:2px; }
+.tw-check {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px;
+  border: 2px solid var(--border-strong);
+  border-radius: 6px;
+  flex-shrink: 0; cursor: pointer;
+  margin-top: 2px; position: relative;
+  background: var(--surface);
+  transition: background 0.15s, border-color 0.15s;
+}
+.tw-check:checked { background: var(--blue); border-color: var(--blue); }
+.tw-check:checked::after {
+  content: ''; position: absolute;
+  left: 5px; top: 1px; width: 6px; height: 10px;
+  border: 2px solid #fff; border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+.tw-item-done .tw-label { text-decoration: line-through; color: var(--text-tertiary); }
+.tw-item-done .tw-desc  { opacity: 0.45; }
+.tw-item-done .tw-num   { opacity: 0.3; }
 
 .pillar-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
 .pillar-row:last-child { border-bottom:none; }
@@ -2018,11 +2038,17 @@ function renderThisWeek() {
 
   let counter = 1;
   items.forEach(item => {
+    const key = 'tw_' + item.label.replace(/\W+/g, '').substring(0, 40);
+    const isDone = localStorage.getItem(key) === 'done';
     const li = document.createElement('li');
+    if (isDone) li.classList.add('tw-item-done');
     const num = item.urgent
       ? `<div class="tw-num urgent">!</div>`
       : `<div class="tw-num">${counter++}</div>`;
-    li.innerHTML = `${num}<div><div class="tw-label">${item.label}</div><div class="tw-desc">${item.desc}</div></div>`;
+    li.innerHTML = `
+      <input type="checkbox" class="tw-check" data-key="${key}" ${isDone ? 'checked' : ''} onchange="saveTwItem(this)">
+      ${num}
+      <div><div class="tw-label">${item.label}</div><div class="tw-desc">${item.desc}</div></div>`;
     list.appendChild(li);
   });
 }
@@ -2330,6 +2356,18 @@ function closeMobileNav() {
 }
 
 // ─── CHECKLIST PERSISTENCE ───────────────────────────────────────────────
+function saveTwItem(el) {
+  const key = el.dataset.key;
+  const li = el.closest('li');
+  if (el.checked) {
+    localStorage.setItem(key, 'done');
+    li.classList.add('tw-item-done');
+  } else {
+    localStorage.removeItem(key);
+    li.classList.remove('tw-item-done');
+  }
+}
+
 function saveChecklist() {
   const state = {};
   for (let i = 1; i <= 15; i++) {
