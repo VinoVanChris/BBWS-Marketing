@@ -647,6 +647,70 @@ header {
   .grid-4 { grid-template-columns: 1fr; }
 }
 
+/* ─── WINE CLUB ─────────────────────────────────────────────────────────── */
+.wc-phase-track { display:flex; align-items:flex-start; gap:0; margin-bottom:8px; }
+.wc-phase { flex:1; text-align:center; position:relative; padding:0 4px; }
+.wc-phase::after { content:''; position:absolute; top:15px; left:50%; right:-50%; height:2px; background:var(--border-strong); z-index:0; }
+.wc-phase:last-child::after { display:none; }
+.wc-phase-dot { width:30px; height:30px; border-radius:50%; background:var(--border-strong); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin:0 auto 8px; position:relative; z-index:1; transition:all 0.2s; }
+.wc-phase.done .wc-phase-dot { background:var(--live); color:#fff; }
+.wc-phase.now .wc-phase-dot { background:#6B2737; color:#fff; box-shadow:0 0 0 5px rgba(107,39,55,0.14); }
+.wc-phase-name { font-size:11px; font-weight:700; color:var(--text-tertiary); line-height:1.3; }
+.wc-phase.now .wc-phase-name { color:#6B2737; }
+.wc-phase.done .wc-phase-name { color:var(--live); }
+.wc-phase-sub { font-size:10px; color:var(--text-tertiary); margin-top:2px; line-height:1.3; }
+
+.wc-tier-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.wc-tier { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.wc-tier-header { padding:18px 20px 14px; background:var(--surface-2); border-bottom:1px solid var(--border); }
+.wc-tier-badge { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#6B2737; margin-bottom:6px; }
+.wc-tier.reserve .wc-tier-badge { color:var(--blue); }
+.wc-tier-name { font-size:17px; font-weight:700; color:var(--text-primary); margin-bottom:4px; }
+.wc-tier-price { font-size:32px; font-weight:700; color:#6B2737; line-height:1; letter-spacing:-0.03em; }
+.wc-tier.reserve .wc-tier-price { color:var(--blue); }
+.wc-tier-price span { font-size:14px; font-weight:500; color:var(--text-secondary); }
+.wc-tier-body { padding:16px 20px; }
+.wc-tier-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:flex-start; }
+.wc-tier-row:last-child { border-bottom:none; }
+.wc-tier-lbl { color:var(--text-tertiary); width:80px; flex-shrink:0; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; padding-top:1px; }
+.wc-tier-val { color:var(--text-primary); flex:1; line-height:1.4; }
+
+.wc-email-list { display:flex; flex-direction:column; }
+.wc-email-item { display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+.wc-email-item:last-child { border-bottom:none; }
+.wc-email-num { width:28px; height:28px; border-radius:50%; background:#6B2737; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:1px; }
+.wc-email-trigger { font-size:10px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:3px; }
+.wc-email-subject { font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:4px; line-height:1.3; }
+.wc-email-goal { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+
+.wc-cal-week { margin-bottom:28px; }
+.wc-cal-heading { font-family:'Rousseau Deco',-apple-system,sans-serif; font-size:20px; font-weight:normal; color:var(--text-primary); margin-bottom:4px; }
+.wc-cal-date { font-size:12px; color:var(--text-secondary); margin-bottom:14px; }
+.wc-cal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
+.wc-cal-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; transition:box-shadow 0.2s; }
+.wc-cal-card:hover { box-shadow:var(--shadow-hover); }
+.wc-cal-ch { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; padding:2px 7px; border-radius:4px; display:inline-block; }
+.wc-ch-ig    { background:#FDE8F0; color:#C13584; }
+.wc-ch-email { background:#E8F2FD; color:var(--blue); }
+.wc-ch-blog  { background:#E6F4E6; color:#1A7A1A; }
+.wc-ch-event { background:#FFF3E0; color:#E65100; }
+.wc-ch-stories { background:linear-gradient(135deg,rgba(247,119,55,0.15),rgba(252,175,69,0.15)); color:#B85000; }
+.wc-cal-title { font-size:13px; font-weight:700; color:var(--text-primary); line-height:1.35; margin-bottom:4px; }
+.wc-cal-desc { font-size:11px; color:var(--text-secondary); line-height:1.45; }
+
+.wc-metric-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+.wc-metric { background:var(--surface); padding:16px 18px; }
+.wc-metric-val { font-size:26px; font-weight:700; color:#6B2737; letter-spacing:-0.03em; line-height:1; margin-bottom:4px; }
+.wc-metric-lbl { font-size:11px; color:var(--text-secondary); font-weight:500; }
+
+@media (max-width:768px) {
+  .wc-tier-grid { grid-template-columns:1fr; }
+  .wc-metric-grid { grid-template-columns:1fr 1fr; }
+  .wc-phase-name { font-size:9px; }
+  .wc-phase-sub { display:none; }
+  .wc-two-col { grid-template-columns:1fr !important; }
+}
+
 /* ─── end of styles ─── */
 </style>
 </head>
@@ -682,6 +746,7 @@ header {
   <button class="tab-btn" onclick="switchTab('blog')">Blog Calendar</button>
   <button class="tab-btn" onclick="switchTab('social')">Social Media</button>
   <button class="tab-btn" onclick="switchTab('google')">Google</button>
+  <button class="tab-btn" onclick="switchTab('wineclub')">Wine Club</button>
   <button class="tab-btn" onclick="switchTab('channels')">Channel Matrix</button>
   <button class="tab-btn" onclick="switchTab('instore')">In-Store</button>
   <button class="tab-btn" onclick="switchTab('postcards')">Postcards</button>
@@ -1020,6 +1085,55 @@ header {
     <span class="section-sub">Poster · till screen · shelf cards · counter · A-frame — Tier 1 &amp; 2 anchor schedule</span>
   </div>
   <ul class="instore-list" id="instoreList"></ul>
+</div>
+
+<!-- ═══════════════════════════════ WINE CLUB ════════════════════════════════ -->
+<div id="tab-wineclub" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Broadway Grand Crew — Wine Club</span>
+    <span class="section-sub">Bimonthly curated subscription · Classic & Reserve · Launch Sep/Oct 2026</span>
+  </div>
+
+  <!-- Revenue metrics -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-body" style="padding:0">
+      <div class="wc-metric-grid" id="wcMetrics"></div>
+    </div>
+  </div>
+
+  <!-- Launch phase tracker -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <span class="card-title">Launch Phase Tracker</span>
+      <span class="badge" id="wcPhaseBadge"></span>
+    </div>
+    <div class="card-body">
+      <div class="wc-phase-track" id="wcPhaseTrack"></div>
+      <div id="wcPhaseDetail" style="margin-top:16px;padding:14px 16px;background:rgba(107,39,55,0.06);border-radius:10px;border-left:3px solid #6B2737"></div>
+    </div>
+  </div>
+
+  <!-- Tiers -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header"><span class="card-title">Membership Tiers</span></div>
+    <div class="card-body">
+      <div class="wc-tier-grid" id="wcTiers"></div>
+    </div>
+  </div>
+
+  <!-- Content calendar + Email sequence side by side -->
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:20px;margin-bottom:20px" class="wc-two-col">
+    <div class="card">
+      <div class="card-header"><span class="card-title">6-Week Launch Content Calendar</span><span class="text-xs">Sep–Oct 2026</span></div>
+      <div class="card-body" id="wcCalendar"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Member Email Lifecycle</span><span class="text-xs">7 automated emails</span></div>
+      <div class="card-body">
+        <div class="wc-email-list" id="wcEmails"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════ POSTCARDS ═══════════════════════════════ -->
@@ -1523,6 +1637,176 @@ const instoreItems = [
     detail:"Poster: Champagne and sparkling wine feature from Dec 15. Counter: 'New Year's Eve. We have everything you need.' A-frame: 'Champagne. Cremant. BC Sparkling. All chilled.' Till screen: 'New Year's Eve Champagne — chilled and ready.'" },
 ];
 
+// ─── WINE CLUB DATA ──────────────────────────────────────────────────────
+const wcCurrentPhase = 0; // Update as phases complete
+
+const wcPhases = [
+  { num:0, name:'Foundations',   sub:'Weeks 1–3',   detail:'Page copy · Squarespace subscription products (Classic + Reserve) · launch photography · curator card design · first 2 shipments\' wines committed.' },
+  { num:1, name:'Soft Launch',   sub:'Week 4',       detail:'Email existing customer list only. Founding member offer — 15% off first shipment, capped at 50 members. Personal outreach from Chris & Jason. No social posts yet.' },
+  { num:2, name:'Public Launch', sub:'Weeks 5–6',    detail:'Wine Club page live in nav. IG launch sequence (3 posts over 3 days). Email blast to full list. Homepage banner. First tasting event announced. Target: 100+ members.' },
+  { num:3, name:'First Delivery',sub:'Week 8',       detail:'Fulfil first shipment with printed curator card. "First box out the door" Instagram post. Post-delivery email with tasting notes. Member survey (3 questions). Collect UGC.' },
+  { num:4, name:'Sustain & Grow',sub:'Months 3–6',   detail:'Establish bimonthly rhythm. Tasting events. Member-only Stories previews. Wildcard polls. Influencer outreach. Target: 200+ members at month 6, 80%+ retention.' },
+  { num:5, name:'Scale',         sub:'Month 6+',     detail:'Gift subscriptions (3-month give-a-box). Corporate gifting tier. Seasonal limited box (Holiday Cellar Pack). Evaluate platform upgrade if Squarespace limits growth.' },
+];
+
+const wcTiers = [
+  { cls:'classic', badge:'Classic', name:'Broadway Grand Crew — Classic', price:'$90', cadence:'per shipment · bimonthly (6×/year)', target:'100 members', revenue:'$54,000 / year',
+    rows:[
+      { lbl:'Box', val:'3 bottles — 2 curated wine + 1 wildcard (premium BC cider, sake, or craft beer)' },
+      { lbl:'Curator note', val:'Printed card with tasting notes, producer story, and pairing suggestion — authored by Chris' },
+      { lbl:'In-store', val:'5% off club wines purchased in-store' },
+      { lbl:'Events', val:'Invite to biannual Bottle Shop Club tasting events' },
+      { lbl:'Delivery', val:'Included Metro Vancouver · discounted province-wide' },
+      { lbl:'Flexibility', val:'Pause up to 2 shipments/year · skip or swap 1 wine per delivery · cancel anytime' },
+    ]
+  },
+  { cls:'reserve', badge:'Reserve', name:'Broadway Grand Crew — Reserve', price:'$145', cadence:'per shipment · bimonthly (6×/year)', target:'50 members', revenue:'$43,500 / year',
+    rows:[
+      { lbl:'Box', val:'6 bottles — 3 curated wine + 1 wildcard + 2 premium (at least 1 limited or hard-to-find)' },
+      { lbl:'Curator note', val:'Extended card + QR-linked video note from Chris, winemaker background, serving and storage tip' },
+      { lbl:'In-store', val:'10% off club wines + complimentary glass pour at any in-store tasting' },
+      { lbl:'Events', val:'Priority invite + reserved seat at all events · occasional exclusive members-only sessions' },
+      { lbl:'Delivery', val:'Included Metro Vancouver + BC province-wide' },
+      { lbl:'Flexibility', val:'Full skip/swap/pause · personal consultation call with Chris to customise any shipment · cancel anytime' },
+    ]
+  },
+];
+
+const wcEmails = [
+  { num:1, trigger:'Immediately on signup',                   subject:'"Welcome to Broadway Grand Crew — here\'s what\'s coming"', goal:'Set expectations and build trust. Personal note from Chris. What to expect. Delivery window. How to pause. FAQ link. Reduces first-month cancellations.' },
+  { num:2, trigger:'1 week before delivery',                  subject:'"Your next box is being packed right now"',                  goal:'Build anticipation and drive add-on revenue. 3-sentence shipment intro. Teaser bottle photo. Note on the wildcard pick. Add-a-bottle upsell link.' },
+  { num:3, trigger:'Day of dispatch',                         subject:'"The box is on its way"',                                    goal:'Reduce delivery anxiety and drive blog traffic. Short personal note. Tracking link. "While you wait, read about [Producer]" — links to relevant blog post.' },
+  { num:4, trigger:'2 days after delivery',                   subject:'"Your tasting notes for this shipment"',                     goal:'Deepen engagement and collect feedback. Full tasting note + food pairing per bottle in Chris\'s voice. Producer link. "Rate your box" survey link.' },
+  { num:5, trigger:'7 days after delivery (no survey yet)',   subject:'"What did you think?"',                                      goal:'Gather retention data. 3-question survey. Incentive: first pick of next add-on for completing it. Signals that you\'re listening.' },
+  { num:6, trigger:'1 week before next billing',              subject:'"Your next selection is being curated"',                     goal:'Reduce passive cancellations. Hint at next shipment theme. Members-only event teaser. "Change your tier / manage subscription" link.' },
+  { num:7, trigger:'14 days after cancellation',              subject:'"We missed you — and we have something for your return"',    goal:'Win-back. Personal note from Chris. One-time return offer (10% off next shipment). No-obligation framing. Industry average: 23–28% win-back rate.' },
+];
+
+const wcCalendar = [
+  { heading:'Launch Week 1', date:'~Sep 1–7, 2026', items:[
+    { ch:'instagram', title:'Something is coming to the Bottle Shop',      desc:'Teaser. No details. Builds curiosity before the founding member email goes out.' },
+    { ch:'instagram', title:'The person picking your bottles',              desc:'Curator intro. Chris photo + 50-word bio. "Without the pretension, since 1986."' },
+    { ch:'stories',   title:'Poll: Red or white first?',                    desc:'First interaction before launch. Signals that curation is personal, not algorithmic.' },
+    { ch:'blog',      title:'Why we\'re launching a wine club',             desc:'The story. The philosophy. Why Broadway. Why now. Why Chris. Linked from Instagram.' },
+    { ch:'email',     title:'Founding member offer (existing list only)',   desc:'15% off first shipment. Capped at 50. Personal from Chris & Jason. No social posts yet.' },
+  ]},
+  { heading:'Launch Week 2', date:'~Sep 8–14, 2026', items:[
+    { ch:'instagram', title:'First shipment reveal — flat lay photography', desc:'The bottles. Clean photography. No caption overload. Let the product speak.' },
+    { ch:'instagram', title:'Reserve tier reveal',                          desc:'"For those who want to go deeper." 6 bottles. The premium pick. Named differentiators.' },
+    { ch:'stories',   title:'Behind the scenes: packing the first order',   desc:'Authenticity. Low production. High trust. No voiceover needed.' },
+    { ch:'blog',      title:'Producer spotlight — one launch wine',         desc:'Deep dive on one Shipment 1 producer. Pairs with the printed curator card in the box.' },
+    { ch:'email',     title:'Public launch blast',                          desc:'Full list. Club is open. Both tiers. Link to Squarespace page. Tasting event announced.' },
+    { ch:'event',     title:'Tasting event announcement',                   desc:'First in-store event. RSVP opens. Target 25+ reservations.' },
+  ]},
+  { heading:'Month 1 — Week 3', date:'~Sep 15–21, 2026', items:[
+    { ch:'instagram', title:'Member unboxing reposts',                      desc:'Encourage #BroadwaySelect tags. Include the ask on the printed curator card in the box.' },
+    { ch:'instagram', title:'Staff pick: This week Chris is drinking…',     desc:'Ongoing format. Builds the curator relationship between shipments.' },
+    { ch:'stories',   title:'Quick tasting note — this week\'s pick',       desc:'30-second video. No production required. Chris\'s shelf, Chris\'s voice.' },
+    { ch:'email',     title:'Post-delivery feedback survey',                desc:'3 questions. What did you love? What would you change? What should the wildcard be next time?' },
+  ]},
+  { heading:'Month 1 — Week 4', date:'~Sep 22–28, 2026', items:[
+    { ch:'instagram', title:'Event preview: Seats are filling up',          desc:'Social proof before the event. Photo of the tasting lineup or the space.' },
+    { ch:'instagram', title:'BC producer spotlight',                        desc:'Feature a BC bottle from the club or store. Roots the club in local identity.' },
+    { ch:'blog',      title:'Pairing guide',                                desc:'Multi-bottle pairing content. Repurposes into email and Instagram carousel. Drives search.' },
+    { ch:'event',     title:'Grand Crew inaugural tasting',                 desc:'In-store. Founding members + guests. Chris hosts. Key content and retention moment.' },
+  ]},
+  { heading:'Month 2 — Week 1', date:'~Oct 1–7, 2026', items:[
+    { ch:'instagram', title:'Next shipment teaser: What\'s in the box?',    desc:'Anticipation building before next billing cycle. Keeps members engaged between deliveries.' },
+    { ch:'instagram', title:'Natural wine 101',                             desc:'Educational. Positions low-intervention wine without being prescriptive.' },
+    { ch:'stories',   title:'Member poll: next wildcard choice',            desc:'Participation in curation. Members who vote are 35% less likely to cancel.' },
+    { ch:'blog',      title:'Natural wine intro post',                      desc:'Search value. Pairs with Instagram carousel. Repurposed as email content.' },
+    { ch:'email',     title:'Next shipment preview',                        desc:'Hint at theme. Members-only event teaser. Quiet renewal reminder.' },
+  ]},
+  { heading:'Month 2 — Week 2', date:'~Oct 8–14, 2026', items:[
+    { ch:'instagram', title:'Shipment week: Going out today',               desc:'Real-time post. Boxes leaving the store. Generates excitement and organic sharing.' },
+    { ch:'instagram', title:'Winemaker story — producer behind a club wine',desc:'Content that makes the club incomparable. Story beats spec sheet every time.' },
+    { ch:'stories',   title:'Packing day reel',                             desc:'Staff wrapping bottles. The human side of the club. No script, no production.' },
+    { ch:'email',     title:'Delivery notification + tasting notes',        desc:'Email #3 (dispatch) into Email #4 (tasting notes). Full notes in Chris\'s voice.' },
+  ]},
+];
+
+// ─── RENDER WINE CLUB ────────────────────────────────────────────────────
+function renderWineClub() {
+  // Metrics bar
+  document.getElementById('wcMetrics').innerHTML = [
+    { val:'$97,500', lbl:'Year-1 revenue target' },
+    { val:'150',     lbl:'Total member target' },
+    { val:'$90–145', lbl:'Price per shipment' },
+    { val:'Sep 2026',lbl:'Launch window' },
+  ].map(m => `<div class="wc-metric"><div class="wc-metric-val">${m.val}</div><div class="wc-metric-lbl">${m.lbl}</div></div>`).join('');
+
+  // Phase tracker
+  const track = document.getElementById('wcPhaseTrack');
+  track.innerHTML = wcPhases.map(p => {
+    const cls = p.num < wcCurrentPhase ? 'done' : p.num === wcCurrentPhase ? 'now' : '';
+    return `<div class="wc-phase ${cls}">
+      <div class="wc-phase-dot">${p.num}</div>
+      <div class="wc-phase-name">${p.name}</div>
+      <div class="wc-phase-sub">${p.sub}</div>
+    </div>`;
+  }).join('');
+
+  const cur = wcPhases[wcCurrentPhase];
+  document.getElementById('wcPhaseBadge').className = 'badge badge-drafted';
+  document.getElementById('wcPhaseBadge').textContent = `Phase ${wcCurrentPhase}: ${cur.name}`;
+  document.getElementById('wcPhaseDetail').innerHTML =
+    `<div style="font-size:12px;font-weight:700;color:#6B2737;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Phase ${wcCurrentPhase} — ${cur.name} · ${cur.sub}</div>
+     <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">${cur.detail}</div>`;
+
+  // Tiers
+  document.getElementById('wcTiers').innerHTML = wcTiers.map(t =>
+    `<div class="wc-tier ${t.cls}">
+      <div class="wc-tier-header">
+        <div class="wc-tier-badge">${t.badge}</div>
+        <div class="wc-tier-name">${t.name}</div>
+        <div class="wc-tier-price">${t.price} <span>/ shipment</span></div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">${t.cadence}</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">Target: ${t.target} &nbsp;·&nbsp; ${t.revenue}</div>
+      </div>
+      <div class="wc-tier-body">
+        ${t.rows.map(r => `<div class="wc-tier-row"><div class="wc-tier-lbl">${r.lbl}</div><div class="wc-tier-val">${r.val}</div></div>`).join('')}
+      </div>
+    </div>`
+  ).join('');
+
+  // Email sequence
+  document.getElementById('wcEmails').innerHTML = wcEmails.map(e =>
+    `<div class="wc-email-item">
+      <div class="wc-email-num">${e.num}</div>
+      <div>
+        <div class="wc-email-trigger">${e.trigger}</div>
+        <div class="wc-email-subject">${e.subject}</div>
+        <div class="wc-email-goal">${e.goal}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  // Content calendar
+  const chMeta = {
+    instagram: { cls:'wc-ch-ig',    label:'Instagram' },
+    stories:   { cls:'wc-ch-stories', label:'Stories' },
+    blog:      { cls:'wc-ch-blog',  label:'Blog' },
+    email:     { cls:'wc-ch-email', label:'Email' },
+    event:     { cls:'wc-ch-event', label:'Event' },
+  };
+  document.getElementById('wcCalendar').innerHTML = wcCalendar.map(week =>
+    `<div class="wc-cal-week">
+      <div class="wc-cal-heading">${week.heading}</div>
+      <div class="wc-cal-date">${week.date}</div>
+      <div class="wc-cal-grid">
+        ${week.items.map(item => {
+          const m = chMeta[item.ch] || { cls:'', label:item.ch };
+          return `<div class="wc-cal-card">
+            <div><span class="wc-cal-ch ${m.cls}">${m.label}</span></div>
+            <div class="wc-cal-title">${item.title}</div>
+            <div class="wc-cal-desc">${item.desc}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`
+  ).join('');
+}
+
 // ─── RENDER THIS WEEK ────────────────────────────────────────────────────
 function renderThisWeek() {
   const today = new Date();
@@ -1913,6 +2197,7 @@ function loadChecklist() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
+renderWineClub();
 renderThisWeek();
 renderBlog('all');
 renderMatrix();
