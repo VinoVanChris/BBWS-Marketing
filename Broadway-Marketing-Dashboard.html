@@ -419,6 +419,84 @@ header {
 .mechanic-desc { font-size:12px; color:var(--text-secondary); line-height:1.4; }
 .preferred-flag { font-size:10px; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; color:var(--blue); margin-bottom:4px; }
 
+/* ─── SOCIAL MEDIA ─── */
+.social-month { margin-bottom: 32px; }
+.social-month-label {
+  font-size: 13px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-tertiary);
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+.social-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.social-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.social-card-stripe { height: 3px; }
+.social-card-body { padding: 14px 16px; }
+.social-card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.social-card-date { font-size:11px; color:var(--text-tertiary); font-weight:500; }
+.social-card-title { font-size:14px; font-weight:700; color:var(--text-primary); line-height:1.3; margin-bottom:6px; letter-spacing:-0.01em; }
+.social-card-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+.social-card-anchor { font-size:11px; color:var(--text-tertiary); margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
+
+/* Platform chips */
+.pc-ig-reel    { background:linear-gradient(135deg,#833AB4,#E1306C); color:#fff; }
+.pc-ig-carousel{ background:#0095F6; color:#fff; }
+.pc-ig-static  { background:#E1306C; color:#fff; }
+.pc-stories    { background:linear-gradient(135deg,#F77737,#FCAF45); color:#fff; }
+.pc-facebook   { background:#1877F2; color:#fff; }
+.pc-x          { background:#1DA1F2; color:#fff; }
+.platform-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:10px; font-weight:700; letter-spacing:0.04em;
+  padding:3px 8px; border-radius:6px; text-transform:uppercase;
+}
+
+/* Google Ads cards */
+.gads-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+  border-top: 3px solid var(--blue);
+}
+.gads-card-name { font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:4px; letter-spacing:-0.01em; }
+.gads-card-period { font-size:12px; color:var(--blue); font-weight:500; margin-bottom:10px; }
+.gads-card-keywords { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.gads-keyword { background:var(--blue-light); color:var(--blue); font-size:11px; padding:3px 8px; border-radius:20px; }
+.gads-card-goal { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+.gads-card-budget { font-size:11px; font-weight:600; color:var(--text-tertiary); margin-top:8px; text-transform:uppercase; letter-spacing:0.05em; }
+
+/* GBP Schedule */
+.gbp-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.gbp-item {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.gbp-month-badge {
+  background: #34A853; color:#fff;
+  font-size:10px; font-weight:700;
+  padding:3px 8px; border-radius:6px;
+  text-transform:uppercase; letter-spacing:0.05em;
+  flex-shrink:0; margin-top:2px;
+}
+.gbp-item-title { font-size:13px; font-weight:700; color:var(--text-primary); margin-bottom:3px; }
+.gbp-item-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+
 /* ─── UTILITIES ─── */
 .mt8 { margin-top:8px; }
 .mt16 { margin-top:16px; }
@@ -602,6 +680,8 @@ header {
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
   <button class="tab-btn" onclick="switchTab('blog')">Blog Calendar</button>
+  <button class="tab-btn" onclick="switchTab('social')">Social Media</button>
+  <button class="tab-btn" onclick="switchTab('google')">Google</button>
   <button class="tab-btn" onclick="switchTab('channels')">Channel Matrix</button>
   <button class="tab-btn" onclick="switchTab('instore')">In-Store</button>
   <button class="tab-btn" onclick="switchTab('postcards')">Postcards</button>
@@ -791,6 +871,39 @@ header {
       </div>
     </div>
   </div>
+
+  <!-- Missing Channels -->
+  <div class="gap-20">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Channels &amp; Opportunities — What to Consider Next</span><span class="text-xs">Advisory · not yet in plan</span></div>
+      <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">
+        <div style="padding:4px 20px 4px 0;border-right:1px solid var(--border)">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:12px">High Impact · Act Soon</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">SMS / Text Marketing</strong><br><span style="color:var(--text-secondary)">Grand Crew members already opted in. A Tuesday afternoon text — "New Okanagan arrivals, 6 bottles, in today" — converts better than email for day-of traffic.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">Pinterest</strong><br><span style="color:var(--text-secondary)">Highest purchase intent of any social platform for gifts, wine pairing, and entertaining. Your gift box and seasonal content would perform extremely well. Zero local liquor store competition.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">In-Store Events &amp; Tastings</strong><br><span style="color:var(--text-secondary)">A monthly producer tasting or Grand Crew exclusive evening builds loyalty that no digital channel can replicate. Also generates organic social content.</span></div>
+          </div>
+        </div>
+        <div style="padding:4px 20px;border-right:1px solid var(--border)">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:12px">Worth Exploring</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">TikTok</strong><br><span style="color:var(--text-secondary)">Spirits, cocktails, and "what should I drink" content dominates TikTok. Your Without the Pretension voice is exactly right for it. Younger Kitsilano demographic is very active there.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">Local Influencer Partnerships</strong><br><span style="color:var(--text-secondary)">Vancouver food and lifestyle creators with 10–50k followers convert better for local retail than national accounts. One partnership per quarter, product-based, no cash needed.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">Vivino &amp; Untappd</strong><br><span style="color:var(--text-secondary)">Claim your store on Vivino (wine) and Untappd (beer). Customers actively look up stores on both platforms before visiting. Free listings, high intent audience.</span></div>
+          </div>
+        </div>
+        <div style="padding:4px 0 4px 20px">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:12px">Longer Term</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">PR &amp; Local Media</strong><br><span style="color:var(--text-secondary)">Scout Magazine, Vancouver Sun food section, Eat Magazine, and Georgia Straight all cover local food retail. A pitch around your 40-year story or a notable new producer arrival is publishable.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">Neighbourhood Partnerships</strong><br><span style="color:var(--text-secondary)">Co-marketing with Kitsilano restaurants and cafes. A card in their menus, their recommendation in your store. Mutual audience with near-zero cost.</span></div>
+            <div style="font-size:13px"><strong style="color:var(--text-primary)">Curated Subscription / Club</strong><br><span style="color:var(--text-secondary)">A monthly or quarterly "Broadway Selects" case for Grand Crew members. Builds recurring revenue, deepens loyalty, and gives you a content engine (the reveal, the tasting notes, the pairing).</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════ BLOG CALENDAR ═══════════════════════════════ -->
@@ -841,60 +954,82 @@ header {
   </div>
 </div>
 
+<!-- ═══════════════════════════════ SOCIAL MEDIA ═══════════════════════════════ -->
+<div id="tab-social" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Social Media Schedule</span>
+    <span class="section-sub">Instagram · Facebook · Stories · Reels — full year calendar</span>
+  </div>
+  <div class="filter-bar" id="socialFilterBar">
+    <span class="text-xs" style="margin-right:4px">Filter:</span>
+    <button class="filter-btn active" onclick="filterSocial('all',this)">All</button>
+    <button class="filter-btn" onclick="filterSocial('ig-reel',this)">Reels</button>
+    <button class="filter-btn" onclick="filterSocial('ig-carousel',this)">Carousels</button>
+    <button class="filter-btn" onclick="filterSocial('ig-static',this)">Posts</button>
+    <button class="filter-btn" onclick="filterSocial('stories',this)">Stories</button>
+    <button class="filter-btn" onclick="filterSocial('facebook',this)">Facebook</button>
+  </div>
+  <div id="socialCalendar"></div>
+</div>
+
+<!-- ═══════════════════════════════ GOOGLE ═══════════════════════════════ -->
+<div id="tab-google" class="tab-panel">
+  <div class="section-header">
+    <span class="section-title">Google</span>
+    <span class="section-sub">Search Ads · Google Business Profile · SEO recommendations</span>
+  </div>
+
+  <!-- SEO Recommendations -->
+  <div class="card" style="margin-bottom:20px;border-left:4px solid var(--blue)">
+    <div class="card-header"><span class="card-title">SEO Priority Actions</span><span class="badge badge-overdue">Quick wins</span></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:10px">Google Business Profile</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:9px">
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">1</span>Add "Beer Store" and "Spirits Store" as GBP categories alongside Liquor Store — you are being missed by beer and spirits searches</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">2</span>Post on GBP minimum twice per week — Google rewards recency and activity with local pack ranking</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">3</span>Add a Products section with photos and prices — GBP products appear in search results directly</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">4</span>Reply to every review within 24 hours — review response rate is a confirmed local ranking signal</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">5</span>Add same-day delivery and province-wide delivery explicitly to your GBP description</li>
+          </ul>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:10px">Website & Local SEO</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:9px">
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">6</span>Create dedicated landing pages: "Wine Delivery Kitsilano", "Spirits Kitsilano", "Beer Store Vancouver" — each targets a distinct search cluster</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">7</span>Build consistent citations on Yelp, YP.ca, and Foursquare — NAP consistency (name, address, phone) is a foundational local signal</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">8</span>Add LocalBusiness schema markup to your Squarespace site — tells Google exactly what you are and where</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">9</span>Target "near me" variants in blog posts — "best wine near Kitsilano Beach", "liquor store near UBC"</li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--blue);font-weight:700;flex-shrink:0">10</span>Every blog post should have a GBP cross-post the same day — doubles the indexed content around each keyword</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Ads Campaigns -->
+  <div class="section-header" style="margin-top:32px">
+    <span class="section-title" style="font-size:24px">Search Ad Campaigns</span>
+    <span class="section-sub">5 campaigns · evergreen + seasonal bursts</span>
+  </div>
+  <div id="googleAds" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px"></div>
+
+  <!-- GBP Schedule -->
+  <div class="section-header" style="margin-top:8px">
+    <span class="section-title" style="font-size:24px">Google Business Profile Post Schedule</span>
+    <span class="section-sub">2× per week minimum · event posts + product spotlights</span>
+  </div>
+  <div id="gbpSchedule"></div>
+</div>
+
 <!-- ═══════════════════════════════ IN-STORE ═══════════════════════════════ -->
 <div id="tab-instore" class="tab-panel">
   <div class="section-header">
     <span class="section-title">In-Store &amp; Physical Channel</span>
-    <span class="section-sub">Window · shelf cards · counter · A-frame</span>
+    <span class="section-sub">Poster · till screen · shelf cards · counter · A-frame — Tier 1 &amp; 2 anchor schedule</span>
   </div>
-  <div class="grid-2">
-    <div>
-      <ul class="instore-list" id="instoreList"></ul>
-    </div>
-    <div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Physical Channel Rules</span></div>
-        <div class="card-body">
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🖼️</span><div><strong>Posters are your in-store billboard.</strong><br><span class="text-sm">One message, one product, one reason to look twice. Mount near the relevant section or at the entrance for Tier 1 events. Print locally.</span></div></li>
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🖥️</span><div><strong>The till screen is your most captive audience.</strong><br><span class="text-sm">The customer is standing still, waiting to pay. That's the moment for a loyalty sign-up prompt, an event teaser, or a product they just walked past. Update for every Tier 1 anchor. Landscape 16:9.</span></div></li>
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🏷️</span><div><strong>Shelf cards earn the sale.</strong><br><span class="text-sm">Customer is standing in front of the bottle. 20 words on taste and occasion converts more than a price tag alone.</span></div></li>
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🅰️</span><div><strong>A-frame is for same-day impulse.</strong><br><span class="text-sm">Update at open. Game at 7 PM? The A-frame at 5 PM should say something about it.</span></div></li>
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🚫</span><div><strong>Don't activate everything for every event.</strong><br><span class="text-sm">Tier 1 anchors get the full set: poster + till + shelf + counter. Tier 2: till + shelf cards. Tier 3: nothing physical. Restraint is what makes the Tier 1 moments land.</span></div></li>
-            <li style="display:flex;gap:10px;font-size:13px"><span style="font-size:16px">🎨</span><div><strong>Templates for everything.</strong><br><span class="text-sm">Same fonts, same palette as digital. The store and the Instagram should look like they know each other. Build a poster template and a till template — lock them and reuse.</span></div></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card gap-20">
-        <div class="card-header"><span class="card-title">Format Guide</span></div>
-        <div class="card-body">
-          <table style="width:100%;font-size:12px;border-collapse:collapse">
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Poster</td>
-              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1 only · print 1 week ahead · A3 or A2 · local print</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Till screen</td>
-              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · update day-of · 16:9 landscape · USB or direct</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Shelf cards</td>
-              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · 2 day lead time · hand-written or printed</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">Counter card</td>
-              <td style="padding:8px 0;color:var(--text-secondary)">Tier 1+2 · 1 week lead time · A5 tent card</td>
-            </tr>
-            <tr>
-              <td style="padding:8px 0;font-weight:600;color:var(--text-primary)">A-frame</td>
-              <td style="padding:8px 0;color:var(--text-secondary)">All tiers · same day · dry-erase or printed insert</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ul class="instore-list" id="instoreList"></ul>
 </div>
 
 <!-- ═══════════════════════════════ POSTCARDS ═══════════════════════════════ -->
@@ -1256,6 +1391,100 @@ const posts = [
     note:"Coordinates with FIFA World Cup anchor Jun 11–Jul 19. The beer and spirits angles make this relevant to every customer." }
 ];
 
+// ─── SOCIAL POSTS ───────────────────────────────────────────────────────
+const socialPosts = [
+  // APRIL
+  { id:1,  month:"April",   date:"Apr 22", platform:"ig-static",   anchor:"BC Wine Month",     title:"Okanagan is ready. Are you?",                      desc:"BC Wine Month section announcement. Shot of our BC VQA wall. Stack of producers we believe in.", status:"live" },
+  { id:2,  month:"April",   date:"Apr 27", platform:"ig-carousel", anchor:"Grand Crew Launch",  title:"Grand Crew is live. Here's what you get.",          desc:"4-slide carousel — what Grand Crew is, how you earn, how you redeem, how to sign up.", status:"to-create" },
+  { id:3,  month:"April",   date:"Apr 28", platform:"stories",     anchor:"Mother's Day",       title:"Something's coming for the moms who know their wine.", desc:"Teaser story. Single frame, no text overload. Builds anticipation before May 1 guide publishes.", status:"to-create" },
+  { id:4,  month:"April",   date:"Apr 29", platform:"facebook",    anchor:"Grand Crew Launch",  title:"Grand Crew loyalty is live — join in store or online.", desc:"Cross-post of Grand Crew announcement. Facebook skews older demographic — this audience is loyal and high-spend.", status:"to-create" },
+  // MAY
+  { id:5,  month:"May",     date:"May 1",  platform:"ig-reel",     anchor:"Mother's Day",       title:"Gift wrapping in-store — no assembly required.",     desc:"Reel of staff wrapping bottles with local artist cards. 15–30 seconds. Music-led, no voiceover needed.", status:"to-create" },
+  { id:6,  month:"May",     date:"May 1",  platform:"ig-carousel", anchor:"Mother's Day",       title:"7 bottles for Mother's Day. Real prices, real opinions.", desc:"Full guide carousel. Each slide = one bottle. Photo, name, price, one-line tasting note. Link to blog post.", status:"drafted" },
+  { id:7,  month:"May",     date:"May 5",  platform:"stories",     anchor:"Mother's Day",       title:"5 days. Bring the good wine.",                       desc:"Simple countdown story. One line of text. One bottle photo. No overthinking.", status:"to-create" },
+  { id:8,  month:"May",     date:"May 9",  platform:"stories",     anchor:"Mother's Day",       title:"Last chance — gift wrapping closes tonight.",         desc:"Final push. Urgency without desperation. Drives same-day foot traffic.", status:"to-create" },
+  { id:9,  month:"May",     date:"May 15", platform:"ig-reel",     anchor:"Spirits Guide",      title:"5 bottles. Every occasion covered.",                  desc:"Bar shelf tour Reel. Staff picks one per category — gin, tequila, rum, whisky, vodka. Confident, fast-paced.", status:"to-create" },
+  { id:10, month:"May",     date:"May 16", platform:"ig-carousel", anchor:"Spirits Guide",      title:"The spirits shelf: one bottle per category.",         desc:"6-slide carousel. One spirit, one recommendation, one reason. Pairs with blog post launch.", status:"to-create" },
+  { id:11, month:"May",     date:"May 26", platform:"ig-carousel", anchor:"BC Wine Month",      title:"BC Wine Month. What we actually reached for.",        desc:"Wrap-up carousel. The bottles that moved. Data-informed from Barnet. Personal and specific.", status:"to-create" },
+  { id:12, month:"May",     date:"May 26", platform:"facebook",    anchor:"BC Wine Month",      title:"BC Wine Month wrap: our picks, your shelf.",          desc:"Cross-post BC Wine Month wrap carousel. Facebook audience responds well to local producer content.", status:"to-create" },
+  // JUNE
+  { id:13, month:"June",    date:"Jun 1",  platform:"stories",     anchor:"Postcard Drop",      title:"Something just landed in your mailbox, Grand Crew.", desc:"Tease the postcard arrival. Don't show it yet. Build curiosity.", status:"to-create" },
+  { id:14, month:"June",    date:"Jun 1",  platform:"ig-static",   anchor:"Postcard Drop",      title:"Win a $250 gift card. Check your mailbox.",          desc:"Contest announcement post. Clean photo of postcard. Entry details in caption.", status:"to-create" },
+  { id:15, month:"June",    date:"Jun 8",  platform:"ig-reel",     anchor:"RTDs",               title:"The fridge changed. Here's what's in it.",           desc:"Fridge tour Reel. Fast cuts, real bottles, no hype. RTD category feature to pair with blog post.", status:"to-create" },
+  { id:16, month:"June",    date:"Jun 8",  platform:"stories",     anchor:"RTDs",               title:"Poll: how do you feel about RTDs?",                   desc:"Interactive poll story. Drives engagement and gives you genuine audience data on the category.", status:"to-create" },
+  { id:17, month:"June",    date:"Jun 13", platform:"stories",     anchor:"FIFA",               title:"Canada plays at BC Place. The fridge is stocked.",   desc:"Match day teaser. Simple, timely, local. No overthinking.", status:"to-create" },
+  { id:18, month:"June",    date:"Jun 15", platform:"ig-carousel", anchor:"FIFA / World Cup",   title:"One drink per country on the pitch.",                 desc:"Most shareable post of the year. Wine, beer, and spirits per nation. Specific bottles, real prices.", status:"to-create" },
+  { id:19, month:"June",    date:"Jun 22", platform:"ig-reel",     anchor:"Greek Day",          title:"Greek wine. We've been getting ready.",               desc:"Greek wine and ouzo shelf tour Reel. Bilingual if possible. Ties to blog post launch.", status:"to-create" },
+  { id:20, month:"June",    date:"Jun 24", platform:"stories",     anchor:"Greek Day",          title:"4 days to Greek Day. The ouzo is in.",               desc:"Countdown story. Feature a different Greek bottle or producer each day.", status:"to-create" },
+  { id:21, month:"June",    date:"Jun 28", platform:"ig-static",   anchor:"Greek Day",          title:"Happy Greek Day. Come see what we've got.",          desc:"Day-of post. Bold, celebratory. Photo of the Greek section or front of store.", status:"to-create" },
+  { id:22, month:"June",    date:"Jun 28", platform:"facebook",    anchor:"Greek Day",          title:"It's Greek Day on Broadway. We're ready.",           desc:"Facebook event post. Cross-post with local neighbourhood groups.", status:"to-create" },
+  // JULY
+  { id:23, month:"July",    date:"Jul 1",  platform:"stories",     anchor:"Canada Day",         title:"Happy Canada Day. Today's shelf is all-Canadian.",  desc:"Day-of story. Quick product tour of the Canada Day display.", status:"to-create" },
+  { id:24, month:"July",    date:"Jul 1",  platform:"ig-carousel", anchor:"Canada Day",         title:"BC wine. Canadian whisky. Craft beer. All in.",      desc:"3-slide carousel — one pick per category. The most genuinely multi-category post of the year.", status:"to-create" },
+  { id:25, month:"July",    date:"Jul 6",  platform:"ig-reel",     anchor:"BC Craft Beer",      title:"We're a beer shop. Let us prove it.",                desc:"Fridge and shelf walk Reel. Feature 3 BC breweries. Confident tone — we know beer.", status:"to-create" },
+  { id:26, month:"July",    date:"Jul 6",  platform:"ig-carousel", anchor:"BC Craft Beer",      title:"3 BC breweries worth knowing right now.",            desc:"One brewery per slide — story, style, the bottle we stock. Pairs with blog post.", status:"to-create" },
+  { id:27, month:"July",    date:"Jul 11", platform:"stories",     anchor:"Khatsahlano",        title:"Khatsahlano morning. Cold fridge is stocked.",       desc:"Opening-morning story. Real time. Fridge, cold whites, RTDs at the front. Get in early.", status:"to-create" },
+  { id:28, month:"July",    date:"Jul 13", platform:"ig-reel",     anchor:"Khatsahlano",        title:"What 150,000 people on West 4th drink.",             desc:"Post-event recap Reel. What moved, what surprised us, what we'd stock differently.", status:"to-create" },
+  { id:29, month:"July",    date:"Jul 20", platform:"ig-reel",     anchor:"The Fridge",         title:"The fridge. Most people don't know it exists.",      desc:"Premium wine fridge reveal Reel. What's in it, why it's there, how to buy. A genuine differentiator.", status:"to-create" },
+  // AUGUST
+  { id:30, month:"August",  date:"Aug 3",  platform:"ig-carousel", anchor:"Grower Champagne",   title:"Moët is fine. Here's what we actually reach for.",   desc:"Small house vs big house carousel. 4–5 grower producers with brief notes. Opinionated and specific.", status:"to-create" },
+  { id:31, month:"August",  date:"Aug 17", platform:"ig-carousel", anchor:"Liqueur Shelf",      title:"The liqueur shelf. Let us show you around.",         desc:"5 bottles, 5 uses carousel. From Aperol to Chartreuse. Approachable entry, aspirational close.", status:"to-create" },
+  // SEPTEMBER
+  { id:32, month:"September",date:"Sep 7", platform:"ig-carousel", anchor:"International Beer",  title:"5 countries. 5 beers. All on our shelf.",           desc:"Belgium, Germany, Japan, UK, Mexico. One bottle per country. Photography-led.", status:"to-create" },
+  { id:33, month:"September",date:"Sep 14",platform:"ig-carousel", anchor:"Fall Okanagan",       title:"New Okanagan vintages are landing. Here's what arrived.", desc:"New arrivals carousel. Pull from Barnet. Real data, real bottles, real excitement.", status:"to-create" },
+  // OCTOBER
+  { id:34, month:"October", date:"Oct 5",  platform:"ig-carousel", anchor:"Thanksgiving",        title:"The full Thanksgiving table. Wine, beer, and the whisky that finishes the night.", desc:"5-slide guide covering every drinker at the table. Pairs with blog post.", status:"to-create" },
+  { id:35, month:"October", date:"Oct 12", platform:"stories",     anchor:"Thanksgiving",        title:"Happy Thanksgiving. We hope the table was full.",  desc:"Day-of story. Warm, neighbourhood tone. No hard sell.", status:"to-create" },
+  { id:36, month:"October", date:"Oct 26", platform:"ig-reel",     anchor:"Halloween",           title:"Orange wine for the colour. Mezcal for the smoke.", desc:"Halloween shelf lineup Reel. Multi-category — orange wine, dark rum, smoky Scotch, weird labels.", status:"to-create" },
+  { id:37, month:"October", date:"Oct 31", platform:"stories",     anchor:"Halloween",           title:"Happy Halloween from the store that's been here since 1986.", desc:"Day-of story. One spooky bottle. One line. Done.", status:"to-create" },
+  // NOVEMBER
+  { id:38, month:"November",date:"Nov 15", platform:"ig-reel",     anchor:"Sons of Vancouver",   title:"One still. A very clear idea of what BC spirits should taste like.", desc:"Distillery feature Reel. Sons of Vancouver story, the bottles, why we stock them. Template for future distillery posts.", status:"to-create" },
+  { id:39, month:"November",date:"Nov 16", platform:"ig-carousel", anchor:"Beaujolais Nouveau",  title:"Beaujolais Nouveau. What to expect.",               desc:"The history, the ritual, the bottles. Playful but specific. Pairs with blog post.", status:"to-create" },
+  { id:40, month:"November",date:"Nov 19", platform:"ig-reel",     anchor:"Beaujolais Nouveau",  title:"The first pour. Every year.",                       desc:"Night-of Reel. First bottle opened. It's silly and it's perfect.", status:"to-create" },
+  { id:41, month:"November",date:"Nov 28", platform:"ig-static",   anchor:"Holiday Season",      title:"The holiday gift display is up. Come see it.",      desc:"Gift display reveal. The visual anchor for all of December's content.", status:"to-create" },
+  // DECEMBER
+  { id:42, month:"December",date:"Dec 1",  platform:"stories",     anchor:"Holiday Season",      title:"Custom gift wrapping. Now open for the season.",    desc:"Story announcing gift wrapping is live. Update weekly with featured bundle.", status:"to-create" },
+  { id:43, month:"December",date:"Dec 5",  platform:"ig-carousel", anchor:"Holiday Season",      title:"The gift box edit. What we actually build.",         desc:"Build process carousel. Wine + spirits + food combinations. $50/$75/$100/$150/$200 tiers.", status:"to-create" },
+  { id:44, month:"December",date:"Dec 15", platform:"ig-reel",     anchor:"NYE Sparkling",       title:"The sparkling shelf. Every budget, every style.",   desc:"Reel across Champagne, Cremant, Cava, Prosecco, BC sparkling. Specific bottles, specific prices.", status:"to-create" },
+  { id:45, month:"December",date:"Dec 20", platform:"stories",     anchor:"Holiday Season",      title:"5 days left. Last call for gift wrapping.",         desc:"Urgency story. Not aggressive. Just useful. Drives final-week foot traffic.", status:"to-create" },
+  { id:46, month:"December",date:"Dec 30", platform:"ig-carousel", anchor:"NYE Sparkling",       title:"What to bring for New Year's Eve. The honest guide.", desc:"Budget guide — under $30, $30–60, $60–100, $100+. Named bottles, named prices, named opinions.", status:"to-create" },
+];
+
+// ─── GOOGLE ADS ─────────────────────────────────────────────────────────
+const googleAds = [
+  { name:"Evergreen — Local Search", period:"Always on", budget:"Low daily / sustained",
+    keywords:["liquor store Kitsilano","wine store Vancouver","beer spirits near me","liquor delivery Kitsilano","wine delivery Vancouver"],
+    goal:"Capture local intent year-round. Anyone searching for a liquor store near Kitsilano, Point Grey, or Fairview should see Broadway first." },
+  { name:"Gifting & Corporate", period:"Oct–Dec peak · lighter May & Nov",  budget:"Medium · increase Dec",
+    keywords:["corporate wine gift Vancouver","gift box wine spirits","liquor gift hamper Kitsilano","birthday wine gift delivery"],
+    goal:"Own the gifting search cluster. No competitor is running serious ads here. This is the lowest competition, highest-value campaign." },
+  { name:"Mother's Day Burst", period:"Apr 25 – May 10", budget:"Short burst · 2 weeks",
+    keywords:["Mother's Day wine gift Vancouver","wine delivery Mother's Day","wine gift Kitsilano","sparkling wine gift"],
+    goal:"Capture Mother's Day gift searches in the Vancouver metro. Pair with blog post and email series for maximum coverage." },
+  { name:"Summer (FIFA + Canada Day + Khatsahlano)", period:"Jun 1 – Jul 15", budget:"Medium burst",
+    keywords:["watch party drinks Vancouver","cold beer wine Kitsilano","Canada Day drinks Vancouver","summer wine delivery"],
+    goal:"Capture summer occasion and event searches. High volume period — FIFA drives national search spikes." },
+  { name:"Holiday Season", period:"Dec 1 – Dec 31", budget:"Highest budget of the year",
+    keywords:["holiday wine gift Vancouver","Christmas spirits gift Kitsilano","New Year's Champagne Vancouver","gift hamper liquor"],
+    goal:"The highest-value search period of the year. Every dollar spent here has the highest return. Do not underspend in December." },
+];
+
+// ─── GBP SCHEDULE ───────────────────────────────────────────────────────
+const gbpPosts = [
+  { month:"May", title:"Mother's Day gifts — order before May 9", desc:"Feature 3 gift options with prices. Include gift wrapping offer and call to action to visit or call." },
+  { month:"May", title:"Grand Crew loyalty is live", desc:"Explain the program in plain language. How to join, what you earn. Photo of loyalty card or in-store sign-up point." },
+  { month:"June", title:"Greek Day — we've been getting ready", desc:"Feature the Greek wine and ouzo selection. Bilingual if possible. Tie to the neighbourhood event." },
+  { month:"June", title:"Summer cold shelf: RTDs, whites, and beer", desc:"Photo of the stocked fridge or cold shelf. Feature 3 items. Casual, summer tone." },
+  { month:"July", title:"Canada Day: BC wine, Canadian whisky, craft beer", desc:"All-Canadian feature. Three picks, three prices, one post. Timely and local." },
+  { month:"August", title:"New arrivals: spirits and liqueur shelf", desc:"Photo of new bottles. Brief notes on each. Encourages visits from regulars checking what's new." },
+  { month:"September", title:"Fall Okanagan harvest — new vintages landing", desc:"What arrived from the Okanagan this harvest. Photo of new BC bottles. Creates urgency for wine collectors." },
+  { month:"October", title:"Thanksgiving picks: wine, beer, and something for after", desc:"The full table guide. Feature 3–4 bottles across categories. Link to blog post." },
+  { month:"October", title:"Halloween: orange wine, dark spirits, great labels", desc:"Multi-category Halloween feature. Photo of orange wine + smoky Scotch + dark rum lineup." },
+  { month:"November", title:"Beaujolais Nouveau arrives November 19", desc:"Announce the arrival date. History in 2 sentences. Whether you're hosting anything." },
+  { month:"December", title:"Holiday gift boxes: $50 to $200", desc:"Photo of gift display. Price tiers listed clearly. Mention gift wrapping and province-wide delivery." },
+  { month:"December", title:"New Year's Eve Champagne and sparkling — all styles stocked", desc:"Feature the sparkling shelf. Champagne, Cremant, BC sparkling, Cava, Prosecco. Every budget covered." },
+];
+
 const matrixRows = [
   { anchor:"BC Wine Month (Apr)", blog:"Post 2: BC Wine in Kitsilano", reel:"Weekly Okanagan producer pick", carousel:"3 BC bottles by style", stories:"Daily BC wine feature", email:"Weekly staff pick + Apr 30 closer", fb:"Cross-post + Events", instore:"Window: BC VQA map · Shelf cards", pc:"—" },
   { anchor:"Malbec World Day (Apr 17)", blog:"Post 6: What Argentina Gets Right", reel:"—", carousel:"3 Malbecs by price tier", stories:"Countdown + day-of", email:"Bi-weekly newsletter mention", fb:"Cross-post", instore:"Shelf cluster · Counter card · A-frame", pc:"—" },
@@ -1449,6 +1678,121 @@ function closeModalOnOverlay(e) {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+// ─── RENDER SOCIAL ───────────────────────────────────────────────────────
+function renderSocial(filter) {
+  const container = document.getElementById('socialCalendar');
+  container.innerHTML = '';
+
+  const filtered = filter === 'all' ? socialPosts : socialPosts.filter(p => p.platform === filter);
+
+  const months = [...new Set(filtered.map(p => p.month))];
+
+  const platformMeta = {
+    'ig-reel':     { cls:'pc-ig-reel',     label:'IG Reel' },
+    'ig-carousel': { cls:'pc-ig-carousel', label:'IG Carousel' },
+    'ig-static':   { cls:'pc-ig-static',   label:'IG Post' },
+    'stories':     { cls:'pc-stories',     label:'Stories' },
+    'facebook':    { cls:'pc-facebook',    label:'Facebook' },
+    'x':           { cls:'pc-x',           label:'X' },
+  };
+
+  const statusInfo = {
+    'live':       { cls:'badge-live',    label:'Live' },
+    'ready':      { cls:'badge-ready',   label:'Ready' },
+    'drafted':    { cls:'badge-drafted', label:'Drafted' },
+    'to-create':  { cls:'badge-todraft', label:'To Create' },
+    'overdue':    { cls:'badge-overdue', label:'Overdue' },
+  };
+
+  months.forEach(month => {
+    const monthPosts = filtered.filter(p => p.month === month);
+
+    const section = document.createElement('div');
+    section.style.marginBottom = '32px';
+
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:16px';
+    header.innerHTML = `
+      <div style="font-family:'Rousseau Deco',-apple-system,sans-serif;font-size:22px;font-weight:normal;color:var(--text-primary)">${month}</div>
+      <div style="font-size:13px;color:var(--text-secondary)">${monthPosts.length} post${monthPosts.length !== 1 ? 's' : ''}</div>
+    `;
+    section.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px';
+
+    monthPosts.forEach(p => {
+      const pm = platformMeta[p.platform] || { cls:'', label:p.platform };
+      const si = statusInfo[p.status] || { cls:'badge-todraft', label:p.status };
+
+      const card = document.createElement('div');
+      card.className = 'social-card';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <span class="platform-chip ${pm.cls}">${pm.label}</span>
+          <span class="badge ${si.cls}">${si.label}</span>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.35;margin-bottom:6px">${p.title}</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.02em">${p.date} · ${p.anchor}</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${p.desc}</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-secondary)">No posts match this filter.</div>';
+  }
+}
+
+function filterSocial(filter, btn) {
+  document.querySelectorAll('#socialFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSocial(filter);
+}
+
+// ─── RENDER GOOGLE ───────────────────────────────────────────────────────
+function renderGoogle() {
+  // Google Ads campaigns
+  const adsContainer = document.getElementById('googleAds');
+  adsContainer.innerHTML = '';
+  googleAds.forEach(ad => {
+    const card = document.createElement('div');
+    card.className = 'gads-card';
+    card.innerHTML = `
+      <div style="font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:4px">${ad.name}</div>
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;letter-spacing:0.02em">${ad.period} &nbsp;·&nbsp; ${ad.budget}</div>
+      <div style="font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Target Keywords</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        ${ad.keywords.map(k => `<span style="background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px">${k}</span>`).join('')}
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${ad.goal}</div>
+    `;
+    adsContainer.appendChild(card);
+  });
+
+  // GBP Posts
+  const gbpContainer = document.getElementById('gbpSchedule');
+  gbpContainer.innerHTML = '';
+  const gbpMonths = [...new Set(gbpPosts.map(p => p.month))];
+  gbpMonths.forEach(month => {
+    const monthPosts = gbpPosts.filter(p => p.month === month);
+    monthPosts.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'gbp-item';
+      item.innerHTML = `
+        ${idx === 0 ? `<div class="gbp-month-badge">${month}</div>` : ''}
+        <div style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:6px">${p.title}</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${p.desc}</div>
+      `;
+      gbpContainer.appendChild(item);
+    });
+  });
+}
+
 // ─── TABS ────────────────────────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1481,6 +1825,8 @@ function loadChecklist() {
 renderBlog('all');
 renderMatrix();
 renderInstore();
+renderSocial('all');
+renderGoogle();
 loadChecklist();
 </script>
 </body>
