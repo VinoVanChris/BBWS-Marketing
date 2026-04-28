@@ -534,17 +534,11 @@ header {
   .stats-bar::-webkit-scrollbar { display: none; }
   .stat-chip { white-space: nowrap; flex-shrink: 0; font-size: 11px; padding: 4px 10px; }
 
-  /* Tab bar */
-  .tab-bar {
-    padding: 0 16px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    top: 52px;
-  }
-  .tab-bar::-webkit-scrollbar { display: none; }
-  .tab-btn { padding: 12px 14px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+  /* Tab bar — replaced by bottom-sheet nav on mobile */
+  .tab-bar { display: none !important; }
+  .mobile-nav-bar { display: block; }
+  .mobile-nav-overlay { display: block; }
+  .mobile-nav-sheet { display: block; }
 
   /* Main content */
   .main { padding: 24px 16px 60px; }
@@ -647,6 +641,108 @@ header {
   .grid-4 { grid-template-columns: 1fr; }
 }
 
+/* ─── MOBILE NAV ────────────────────────────────────────────────────────── */
+.mobile-nav-bar {
+  display: none;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  position: sticky;
+  top: 56px;
+  z-index: 90;
+}
+.mobile-nav-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-nav-chevron {
+  width: 20px; height: 20px;
+  color: var(--text-secondary);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.mobile-nav-bar.open .mobile-nav-chevron { transform: rotate(180deg); }
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.mobile-nav-overlay.open { opacity: 1; pointer-events: all; }
+.mobile-nav-sheet {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  max-height: 86vh;
+  overflow-y: auto;
+  box-shadow: 0 -4px 40px rgba(0,0,0,0.14);
+}
+.mobile-nav-sheet.open { transform: translateY(0); }
+.mobile-nav-handle {
+  width: 36px; height: 4px;
+  background: var(--border-strong);
+  border-radius: 2px;
+  margin: 14px auto 0;
+}
+.mobile-nav-section-label {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-tertiary);
+  padding: 16px 20px 8px;
+}
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.1s;
+}
+.mobile-nav-item:active { background: var(--bg); }
+.mobile-nav-item.active { color: var(--blue); font-weight: 600; }
+.mobile-nav-item.active::after {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+
 /* ─── WINE CLUB ─────────────────────────────────────────────────────────── */
 .wc-phase-track { display:flex; align-items:flex-start; gap:0; margin-bottom:8px; }
 .wc-phase { flex:1; text-align:center; position:relative; padding:0 4px; }
@@ -740,16 +836,39 @@ header {
   <div class="stat-chip"><span class="dot" style="background:var(--overdue)"></span><span class="val">May 20</span> postcard print deadline</div>
 </div>
 
-<!-- TABS -->
+<!-- TABS (desktop) -->
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
-  <button class="tab-btn" onclick="switchTab('blog')">Blog Calendar</button>
-  <button class="tab-btn" onclick="switchTab('social')">Social Media</button>
-  <button class="tab-btn" onclick="switchTab('google')">Google</button>
-  <button class="tab-btn" onclick="switchTab('wineclub')">Wine Club</button>
-  <button class="tab-btn" onclick="switchTab('channels')">Channel Matrix</button>
-  <button class="tab-btn" onclick="switchTab('instore')">In-Store</button>
-  <button class="tab-btn" onclick="switchTab('postcards')">Postcards</button>
+  <button class="tab-btn active" data-tab="overview"  onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn"        data-tab="blog"       onclick="switchTab('blog')">Blog Calendar</button>
+  <button class="tab-btn"        data-tab="social"     onclick="switchTab('social')">Social Media</button>
+  <button class="tab-btn"        data-tab="google"     onclick="switchTab('google')">Google</button>
+  <button class="tab-btn"        data-tab="wineclub"   onclick="switchTab('wineclub')">Wine Club</button>
+  <button class="tab-btn"        data-tab="channels"   onclick="switchTab('channels')">Channel Matrix</button>
+  <button class="tab-btn"        data-tab="instore"    onclick="switchTab('instore')">In-Store</button>
+  <button class="tab-btn"        data-tab="postcards"  onclick="switchTab('postcards')">Postcards</button>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav-bar" id="mobileNavBar">
+  <button class="mobile-nav-trigger" id="mobileNavTrigger" onclick="toggleMobileNav()">
+    <span id="mobileNavLabel">Overview</span>
+    <svg class="mobile-nav-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="5 8 10 13 15 8"/>
+    </svg>
+  </button>
+</div>
+<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-sheet" id="mobileNavSheet">
+  <div class="mobile-nav-handle"></div>
+  <div class="mobile-nav-section-label">Navigate to</div>
+  <button class="mobile-nav-item active" data-tab="overview"  onclick="switchTab('overview')">Overview</button>
+  <button class="mobile-nav-item"        data-tab="blog"       onclick="switchTab('blog')">Blog Calendar</button>
+  <button class="mobile-nav-item"        data-tab="social"     onclick="switchTab('social')">Social Media</button>
+  <button class="mobile-nav-item"        data-tab="google"     onclick="switchTab('google')">Google</button>
+  <button class="mobile-nav-item"        data-tab="wineclub"   onclick="switchTab('wineclub')">Wine Club</button>
+  <button class="mobile-nav-item"        data-tab="channels"   onclick="switchTab('channels')">Channel Matrix</button>
+  <button class="mobile-nav-item"        data-tab="instore"    onclick="switchTab('instore')">In-Store</button>
+  <button class="mobile-nav-item"        data-tab="postcards"  onclick="switchTab('postcards')">Postcards</button>
 </div>
 
 <div class="main">
@@ -2169,11 +2288,45 @@ function renderGoogle() {
 }
 
 // ─── TABS ────────────────────────────────────────────────────────────────
+const tabLabels = {
+  overview:'Overview', blog:'Blog Calendar', social:'Social Media',
+  google:'Google', wineclub:'Wine Club', channels:'Channel Matrix',
+  instore:'In-Store', postcards:'Postcards'
+};
+
 function switchTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  const desktopBtn = document.querySelector(`.tab-btn[data-tab="${name}"]`);
+  if (desktopBtn) desktopBtn.classList.add('active');
+  // Mobile nav — update label and active item, close sheet
+  const lbl = document.getElementById('mobileNavLabel');
+  if (lbl) lbl.textContent = tabLabels[name] || name;
+  document.querySelectorAll('.mobile-nav-item').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === name));
+  closeMobileNav();
+}
+
+function toggleMobileNav() {
+  const sheet   = document.getElementById('mobileNavSheet');
+  const overlay = document.getElementById('mobileNavOverlay');
+  const bar     = document.getElementById('mobileNavBar');
+  if (sheet.classList.contains('open')) {
+    closeMobileNav();
+  } else {
+    sheet.classList.add('open');
+    overlay.classList.add('open');
+    bar.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMobileNav() {
+  document.getElementById('mobileNavSheet').classList.remove('open');
+  document.getElementById('mobileNavOverlay').classList.remove('open');
+  document.getElementById('mobileNavBar').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ─── CHECKLIST PERSISTENCE ───────────────────────────────────────────────
