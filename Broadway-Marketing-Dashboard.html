@@ -536,9 +536,9 @@ header {
 
   /* Tab bar — replaced by bottom-sheet nav on mobile */
   .tab-bar { display: none !important; }
-  .mobile-nav-bar { display: block; }
-  .mobile-nav-overlay { display: block; }
-  .mobile-nav-sheet { display: block; }
+  .mobile-nav-bar    { display: block !important; }
+  .mobile-nav-overlay { display: block !important; }
+  .mobile-nav-sheet  { display: block !important; }
 
   /* Main content */
   .main { padding: 24px 16px 60px; }
@@ -1041,7 +1041,7 @@ header {
   <div class="gap-20">
     <div class="card">
       <div class="card-header"><span class="card-title">Channels &amp; Opportunities — What to Consider Next</span><span class="text-xs">Advisory · not yet in plan</span></div>
-      <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">
+      <div class="card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0">
         <div style="padding:4px 20px 4px 0;border-right:1px solid var(--border)">
           <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary);margin-bottom:12px">High Impact · Act Soon</p>
           <div style="display:flex;flex-direction:column;gap:12px">
