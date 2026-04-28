@@ -556,9 +556,6 @@ header {
 
   /* Tab bar — replaced by bottom-sheet nav on mobile */
   .tab-bar { display: none !important; }
-  .mobile-nav-bar    { display: block !important; }
-  .mobile-nav-overlay { display: block !important; }
-  .mobile-nav-sheet  { display: block !important; }
 
   /* Main content */
   .main { padding: 24px 16px 60px; }
@@ -661,9 +658,8 @@ header {
   .grid-4 { grid-template-columns: 1fr; }
 }
 
-/* ─── MOBILE NAV ────────────────────────────────────────────────────────── */
+/* ─── MOBILE NAV (mobile-first: visible by default, hidden on desktop) ───── */
 .mobile-nav-bar {
-  display: none;
   background: rgba(255,255,255,0.92);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -696,7 +692,6 @@ header {
 }
 .mobile-nav-bar.open .mobile-nav-chevron { transform: rotate(180deg); }
 .mobile-nav-overlay {
-  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.4);
@@ -709,7 +704,6 @@ header {
 }
 .mobile-nav-overlay.open { opacity: 1; pointer-events: all; }
 .mobile-nav-sheet {
-  display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
   background: var(--surface);
@@ -723,6 +717,13 @@ header {
   box-shadow: 0 -4px 40px rgba(0,0,0,0.14);
 }
 .mobile-nav-sheet.open { transform: translateY(0); }
+
+/* Hide mobile nav on desktop — tab bar takes over above 768px */
+@media (min-width: 769px) {
+  .mobile-nav-bar     { display: none; }
+  .mobile-nav-overlay { display: none; }
+  .mobile-nav-sheet   { display: none; }
+}
 .mobile-nav-handle {
   width: 36px; height: 4px;
   background: var(--border-strong);
