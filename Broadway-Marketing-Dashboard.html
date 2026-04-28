@@ -693,43 +693,14 @@ header {
 <div id="tab-overview" class="tab-panel active">
   <div class="grid-3">
 
-    <!-- This week -->
+    <!-- This week — rendered dynamically by renderThisWeek() -->
     <div class="card" style="grid-column: span 2">
       <div class="card-header">
-        <span class="card-title">This Week — April 27, 2026</span>
-        <span class="badge badge-overdue">Action required</span>
+        <span class="card-title" id="thisWeekTitle">This Week</span>
+        <span class="badge" id="thisWeekBadge"></span>
       </div>
       <div class="card-body" style="padding-top:8px">
-        <ul class="this-week-list">
-          <li>
-            <div class="tw-num urgent">!</div>
-            <div><div class="tw-label">Publish Post 6 — Malbec World Day</div><div class="tw-desc">Overdue since April 17. Draft and publish immediately.</div></div>
-          </li>
-          <li>
-            <div class="tw-num">2</div>
-            <div><div class="tw-label">Publish Post 2 — BC Wine in Kitsilano</div><div class="tw-desc">Draft ready. Schedule now for April 27.</div></div>
-          </li>
-          <li>
-            <div class="tw-num">3</div>
-            <div><div class="tw-label">Publish Post 3 — Grand Crew Loyalty Program</div><div class="tw-desc">Draft ready. Schedule now for April 27.</div></div>
-          </li>
-          <li>
-            <div class="tw-num">4</div>
-            <div><div class="tw-label">Draft Post 4 — Corporate Wine Gifts</div><div class="tw-desc">Blue ocean opportunity. Zero local competition. Publish May 1.</div></div>
-          </li>
-          <li>
-            <div class="tw-num">5</div>
-            <div><div class="tw-label">Schedule Mother's Day email series</div><div class="tw-desc">First send April 28 · Post 5 publishes May 1 · Final send May 9.</div></div>
-          </li>
-          <li>
-            <div class="tw-num gold">6</div>
-            <div><div class="tw-label">Order Greek wines — deadline May 1</div><div class="tw-desc">Assyrtiko, Xinomavro, Agiorgitiko + small ouzo selection for Greek Day (Jun 28).</div></div>
-          </li>
-          <li>
-            <div class="tw-num gold">7</div>
-            <div><div class="tw-label">Start June postcard — print deadline May 20</div><div class="tw-desc">Pull Grand Crew list from Barnet · decide entry mechanic · brief the design.</div></div>
-          </li>
-        </ul>
+        <ul class="this-week-list" id="thisWeekList"></ul>
       </div>
     </div>
 
@@ -1533,6 +1504,107 @@ const instoreItems = [
     detail:"Poster: Champagne and sparkling wine feature from Dec 15. Counter: 'New Year's Eve. We have everything you need.' A-frame: 'Champagne. Cremant. BC Sparkling. All chilled.' Till screen: 'New Year's Eve Champagne — chilled and ready.'" },
 ];
 
+// ─── RENDER THIS WEEK ────────────────────────────────────────────────────
+function renderThisWeek() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weekEnd  = new Date(today); weekEnd.setDate(today.getDate() + 7);
+  const soonEnd  = new Date(today); soonEnd.setDate(today.getDate() + 30);
+  const yr = today.getFullYear();
+
+  // Update title with live date
+  document.getElementById('thisWeekTitle').textContent =
+    'This Week — ' + today.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+
+  // Date parser — handles "Apr 17, 2026" and "Apr 22" (assumes current year)
+  function pd(str) {
+    if (!str) return null;
+    if (/[A-Z][a-z]+ \d+, \d{4}/.test(str)) { const d = new Date(str); return isNaN(d) ? null : d; }
+    const m = str.match(/^([A-Z][a-z]+ \d+)$/);
+    if (m) { const d = new Date(m[1] + ', ' + yr); return isNaN(d) ? null : d; }
+    return null;
+  }
+
+  const items = [];
+
+  // ── Blog posts ───────────────────────────────────────────────────────────
+  posts.forEach(p => {
+    const d = pd(p.date);
+    if (!d || p.status === 'live') return;
+    if (d < today) {
+      items.push({ urgent:true, label:`Publish Blog Post ${p.id} — ${p.title}`,
+        desc:`Overdue since ${p.date}. Draft and publish immediately.`, date:d });
+    } else if (d <= weekEnd) {
+      const action = p.status === 'ready'   ? 'Ready to publish.' :
+                     p.status === 'drafted' ? 'Drafted — final review needed.' : 'Needs drafting.';
+      items.push({ urgent:false, label:`Blog Post ${p.id} due ${p.date} — ${p.title}`,
+        desc:action, date:d });
+    }
+  });
+
+  // ── Social posts ─────────────────────────────────────────────────────────
+  const platLabel = { 'ig-reel':'IG Reel','ig-carousel':'IG Carousel','ig-static':'IG Post',
+                      'stories':'Stories','facebook':'Facebook','x':'X' };
+  socialPosts.forEach(p => {
+    const d = pd(p.date);
+    if (!d || p.status === 'live') return;
+    const pl = platLabel[p.platform] || p.platform;
+    if (d < today) {
+      items.push({ urgent:true, label:`${pl} — ${p.title}`,
+        desc:`Overdue since ${p.date} · ${p.anchor}`, date:d });
+    } else if (d <= weekEnd) {
+      const action = p.status === 'drafted' ? 'Drafted — schedule now.' : 'Needs creating.';
+      items.push({ urgent:false, label:`${pl} due ${p.date} — ${p.title}`,
+        desc:`${p.anchor} · ${action}`, date:d });
+    }
+  });
+
+  // ── Fixed deadlines within 30 days ───────────────────────────────────────
+  [
+    { date: new Date('May 20, 2026'), label:'Postcard print deadline — May 20',
+      desc:'Pull Grand Crew list from Barnet · finalise design · submit to printer.' },
+    { date: new Date('May 1, 2026'),  label:'Greek wine order deadline — May 1',
+      desc:'Source Assyrtiko, Xinomavro, Agiorgitiko + small ouzo selection for Greek Day (Jun 28).' },
+  ].forEach(fd => {
+    if (fd.date >= today && fd.date <= soonEnd) {
+      const days = Math.ceil((fd.date - today) / 86400000);
+      items.push({ urgent: days <= 7, label: fd.label,
+        desc: fd.desc + ` ${days} day${days !== 1 ? 's' : ''} away.`, date: fd.date });
+    }
+  });
+
+  // ── Sort: urgent first, then chronological ───────────────────────────────
+  items.sort((a, b) => {
+    if (a.urgent !== b.urgent) return a.urgent ? -1 : 1;
+    return a.date - b.date;
+  });
+
+  const list  = document.getElementById('thisWeekList');
+  const badge = document.getElementById('thisWeekBadge');
+  list.innerHTML = '';
+
+  if (items.length === 0) {
+    list.innerHTML = '<li style="padding:14px 0;color:var(--text-secondary);font-size:13px">Nothing due this week — you\'re ahead of schedule.</li>';
+    badge.className = 'badge badge-live';
+    badge.textContent = 'On track';
+    return;
+  }
+
+  const hasUrgent = items.some(i => i.urgent);
+  badge.className  = 'badge ' + (hasUrgent ? 'badge-overdue' : 'badge-ready');
+  badge.textContent = hasUrgent ? 'Action required' : 'Coming up';
+
+  let counter = 1;
+  items.forEach(item => {
+    const li = document.createElement('li');
+    const num = item.urgent
+      ? `<div class="tw-num urgent">!</div>`
+      : `<div class="tw-num">${counter++}</div>`;
+    li.innerHTML = `${num}<div><div class="tw-label">${item.label}</div><div class="tw-desc">${item.desc}</div></div>`;
+    list.appendChild(li);
+  });
+}
+
 // ─── RENDER BLOG GRID ────────────────────────────────────────────────────
 function renderBlog(filter) {
   const grid = document.getElementById('blogGrid');
@@ -1822,6 +1894,7 @@ function loadChecklist() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
+renderThisWeek();
 renderBlog('all');
 renderMatrix();
 renderInstore();
