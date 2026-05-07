@@ -274,6 +274,17 @@ header {
 .badge-click { cursor: pointer; user-select: none; }
 .badge-click:hover  { opacity: 0.78; transform: scale(1.06); }
 .badge-click:active { transform: scale(0.96); }
+
+/* ─── MODAL STATUS PICKER ─── */
+.status-picker { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.spick {
+  padding:6px 16px; border-radius:20px; cursor:pointer; font-family:inherit;
+  font-size:12px; font-weight:600; border:1.5px solid transparent;
+  opacity:0.35; transition:opacity 0.15s, transform 0.1s;
+}
+.spick:hover  { opacity:0.65; }
+.spick.spick-on { opacity:1; border-color:rgba(0,0,0,0.12); transform:none; }
+.spick:active { transform:scale(0.96); }
 .blog-card-body { padding: 20px 22px 18px; }
 .blog-card-eyebrow {
   display: flex;
@@ -2700,7 +2711,7 @@ function openModal(id) {
   const p = posts.find(x => x.id === id);
   if (!p) return;
   const pColor = pillars[p.pillar].color;
-  const sInfo = statusInfo[p.status];
+  const sInfo  = statusInfo[p.status] || statusInfo['to-draft'];
 
   document.getElementById('modalTop').style.background = pColor;
   document.getElementById('modalTitle').textContent = p.title;
@@ -2708,12 +2719,22 @@ function openModal(id) {
     `<span class="badge ${sInfo.cls}">${sInfo.label}</span>
      <span class="pillar-badge pillar-${p.pillar}">Pillar ${p.pillar} — ${pillars[p.pillar].name}</span>`;
 
-  let body = '';
+  // Status picker — segmented control at the top of the modal body
+  const pickerBtns = SYNC_CYCLE_BLOG.map(s => {
+    const si  = statusInfo[s];
+    const on  = p.status === s ? 'spick-on' : '';
+    return `<button class="spick ${si.cls} ${on}" onclick="setPostStatus(${id},'${s}')">${si.label}</button>`;
+  }).join('');
 
-  if (p.status === 'overdue') {
+  let body = `<div class="modal-section" style="padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:4px">
+    <div class="modal-label">Status</div>
+    <div class="status-picker">${pickerBtns}</div>
+  </div>`;
+
+  if (isOverdue(p)) {
     body += `<div class="alert-box red">⚠️ This post was due ${p.date}. Draft and publish immediately.</div>`;
   }
-  if (p.note && p.status !== 'overdue') {
+  if (p.note && !isOverdue(p)) {
     body += `<div class="alert-box">📌 ${p.note}</div>`;
   }
 
@@ -2749,6 +2770,17 @@ function openModal(id) {
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+// Set a post status directly (called from modal status picker)
+function setPostStatus(id, newStatus) {
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  p.status = newStatus;
+  liveOverrides.posts[id] = newStatus;
+  scheduleSync();
+  openModal(id);           // re-render modal with updated picker
+  renderBlog(_blogFilter); // refresh the card grid behind it
 }
 
 function closeModal() {
