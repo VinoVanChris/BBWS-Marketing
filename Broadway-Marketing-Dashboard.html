@@ -252,6 +252,22 @@ header {
 .blog-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 .blog-card-stripe { height: 4px; }
 .blog-card-top { height: 7px; }
+
+/* ─── SYNC INDICATOR ─── */
+#syncIndicator {
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  padding: 4px 11px; border-radius: 20px;
+  transition: all 0.25s; white-space: nowrap; display: inline-block;
+}
+.sync-pending { color: #E07B00; background: rgba(224,123,0,0.12); }
+.sync-syncing { color: #0071E3; background: rgba(0,113,227,0.12); }
+.sync-saved   { color: #1A7A1A; background: rgba(26,122,26,0.12); }
+.sync-error   { color: #C0392B; background: rgba(192,57,43,0.12); }
+
+/* ─── CLICKABLE BADGES ─── */
+.badge-click { cursor: pointer; user-select: none; }
+.badge-click:hover  { opacity: 0.78; transform: scale(1.06); }
+.badge-click:active { transform: scale(0.96); }
 .blog-card-body { padding: 20px 22px 18px; }
 .blog-card-eyebrow {
   display: flex;
@@ -840,9 +856,12 @@ header {
     <div class="brand-name">Broadway Beer Wine &amp; Spirits</div>
     <div class="brand-tagline">not every bottle, the right one &nbsp;·&nbsp; est. 1986</div>
   </div>
-  <div class="header-right">
-    <strong>Marketing Dashboard 2026–27</strong><br>
-    Chris Reid · Updated April 27, 2026
+  <div style="display:flex;align-items:center;gap:14px">
+    <span id="syncIndicator"></span>
+    <div class="header-right">
+      <strong>Marketing Dashboard 2026–27</strong><br>
+      Chris Reid · Updated April 27, 2026
+    </div>
   </div>
 </header>
 
@@ -1140,7 +1159,7 @@ header {
     <span class="section-sub">30 posts · April 2026 – February 2027 · Sorted chronologically · Colour-coded by pillar</span>
   </div>
 
-  <div class="filter-bar">
+  <div class="filter-bar" id="blogFilterBar">
     <span class="text-xs" style="margin-right:4px">Filter:</span>
     <button class="filter-btn active" onclick="filterBlog('all', this)">All posts</button>
     <button class="filter-btn" onclick="filterBlog('status-overdue', this)" style="border-color:#E09090;color:var(--overdue)">Overdue</button>
@@ -2592,7 +2611,9 @@ function renderBlog(filter) {
       <div class="blog-card-body">
         <div class="blog-card-meta">
           <span class="blog-num">#${String(p.id).padStart(2,'0')}</span>
-          <span class="badge ${sInfo.cls}">${sInfo.label}</span>
+          <span class="badge ${sInfo.cls} badge-click"
+                onclick="cyclePostStatus(${p.id}, event)"
+                title="Click to advance status">${sInfo.label}</span>
         </div>
         <div class="blog-card-title">${p.title}</div>
         <div class="blog-card-date">${p.date}</div>
@@ -2607,7 +2628,8 @@ function renderBlog(filter) {
 }
 
 function filterBlog(filter, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  _blogFilter = filter;
+  document.querySelectorAll('#blogFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderBlog(filter);
 }
@@ -2768,7 +2790,9 @@ function renderSocial(filter) {
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
           <span class="platform-chip ${pm.cls}">${pm.label}</span>
-          <span class="badge ${si.cls}">${si.label}</span>
+          <span class="badge ${si.cls} badge-click"
+                onclick="cycleSocialStatus(${p.id}, event)"
+                title="Click to mark live / revert">${si.label}</span>
         </div>
         <div style="font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.35;margin-bottom:6px">${p.title}</div>
         <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.02em">${p.date} · ${p.anchor}</div>
@@ -2787,6 +2811,7 @@ function renderSocial(filter) {
 }
 
 function filterSocial(filter, btn) {
+  _socialFilter = filter;
   document.querySelectorAll('#socialFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderSocial(filter);
@@ -2903,6 +2928,113 @@ function loadChecklist() {
     const el = document.getElementById(k);
     if (el) el.checked = v;
   });
+}
+
+// ─── GITHUB AUTO-SYNC ────────────────────────────────────────────────────
+const SYNC_REPO  = 'VinoVanChris/BBWS-Marketing';
+const SYNC_PATH  = 'status-overrides.json';
+const SYNC_CYCLE_BLOG   = ['to-draft','drafted','draft-ready','live'];
+const SYNC_CYCLE_SOCIAL = ['to-create','live'];
+
+// Running overrides object — starts empty, populated from GitHub on load
+const liveOverrides = { posts: {}, socialPosts: {} };
+
+let _blogFilter   = 'all';
+let _socialFilter = 'all';
+let _syncTimer    = null;
+
+function syncToken() { return localStorage.getItem('bbws_gh_token') || ''; }
+
+function setSyncStatus(state) {
+  const el = document.getElementById('syncIndicator');
+  if (!el) return;
+  el.className = '';
+  const map = {
+    pending: ['● Unsaved', 'sync-pending'],
+    syncing: ['↑ Syncing…', 'sync-syncing'],
+    saved:   ['✓ Saved',   'sync-saved'],
+    error:   ['✗ Failed',  'sync-error']
+  };
+  const [text, cls] = map[state] || ['', ''];
+  el.textContent = text;
+  if (cls) el.classList.add(cls);
+  if (state === 'saved') setTimeout(() => setSyncStatus(''), 3000);
+}
+
+async function loadOverrides() {
+  try {
+    const url = `https://raw.githubusercontent.com/${SYNC_REPO}/main/${SYNC_PATH}?t=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.posts)       Object.assign(liveOverrides.posts,       data.posts);
+    if (data.socialPosts) Object.assign(liveOverrides.socialPosts, data.socialPosts);
+    // Apply to in-memory arrays
+    Object.entries(liveOverrides.posts).forEach(([id, s]) => {
+      const p = posts.find(x => x.id === +id); if (p) p.status = s;
+    });
+    Object.entries(liveOverrides.socialPosts).forEach(([id, s]) => {
+      const p = socialPosts.find(x => x.id === +id); if (p) p.status = s;
+    });
+  } catch(e) { /* offline or file missing — silent */ }
+}
+
+async function pushOverrides() {
+  const token = syncToken();
+  if (!token) { setSyncStatus('error'); return; }
+  setSyncStatus('syncing');
+  try {
+    // Get current SHA (needed for update; omit if file doesn't exist yet)
+    let sha;
+    const meta = await fetch(
+      `https://api.github.com/repos/${SYNC_REPO}/contents/${SYNC_PATH}`,
+      { headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (meta.ok) { const m = await meta.json(); sha = m.sha; }
+
+    const body = {
+      message: 'dashboard: auto-sync status updates',
+      content:  btoa(JSON.stringify(liveOverrides, null, 2)),
+      ...(sha ? { sha } : {})
+    };
+    const put = await fetch(
+      `https://api.github.com/repos/${SYNC_REPO}/contents/${SYNC_PATH}`,
+      { method:'PUT',
+        headers: { 'Authorization': 'token ' + token,
+                   'Content-Type': 'application/json',
+                   'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify(body) }
+    );
+    setSyncStatus(put.ok ? 'saved' : 'error');
+  } catch(e) { setSyncStatus('error'); }
+}
+
+function scheduleSync() {
+  setSyncStatus('pending');
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(pushOverrides, 2000); // 2 s debounce
+}
+
+function cyclePostStatus(id, event) {
+  event.stopPropagation();
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  const next = SYNC_CYCLE_BLOG[(SYNC_CYCLE_BLOG.indexOf(p.status) + 1) % SYNC_CYCLE_BLOG.length];
+  p.status = next;
+  liveOverrides.posts[id] = next;
+  scheduleSync();
+  renderBlog(_blogFilter);
+}
+
+function cycleSocialStatus(id, event) {
+  event.stopPropagation();
+  const p = socialPosts.find(x => x.id === id);
+  if (!p) return;
+  const next = SYNC_CYCLE_SOCIAL[(SYNC_CYCLE_SOCIAL.indexOf(p.status) + 1) % SYNC_CYCLE_SOCIAL.length];
+  p.status = next;
+  liveOverrides.socialPosts[id] = next;
+  scheduleSync();
+  renderSocial(_socialFilter);
 }
 
 // ─── GANTT DATA ───────────────────────────────────────────────────────────
@@ -3087,7 +3219,13 @@ renderSocial('all');
 renderGoogle();
 renderGantt();
 loadChecklist();
-scheduleGanttMidnight(); // keeps today-line accurate if tab stays open overnight
+scheduleGanttMidnight();
+
+// Load status overrides from GitHub, then re-render affected tabs
+loadOverrides().then(() => {
+  renderBlog(_blogFilter);
+  renderSocial(_socialFilter);
+});
 </script>
 </body>
 </html>
