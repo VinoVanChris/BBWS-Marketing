@@ -861,6 +861,7 @@ header {
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="overview"   onclick="switchTab('overview')">Overview</button>
   <button class="tab-btn"        data-tab="channels"   onclick="switchTab('channels')">Channel Matrix</button>
+  <button class="tab-btn"        data-tab="timeline"   onclick="switchTab('timeline')">Timeline</button>
   <button class="tab-btn"        data-tab="postcards"  onclick="switchTab('postcards')">Postcards</button>
   <button class="tab-btn"        data-tab="blog"       onclick="switchTab('blog')">Blog Calendar</button>
   <button class="tab-btn"        data-tab="social"     onclick="switchTab('social')">Social Media</button>
@@ -884,6 +885,7 @@ header {
   <div class="mobile-nav-section-label">Navigate to</div>
   <button class="mobile-nav-item active" data-tab="overview"   onclick="switchTab('overview')">Overview</button>
   <button class="mobile-nav-item"        data-tab="channels"   onclick="switchTab('channels')">Channel Matrix</button>
+  <button class="mobile-nav-item"        data-tab="timeline"   onclick="switchTab('timeline')">Timeline</button>
   <button class="mobile-nav-item"        data-tab="postcards"  onclick="switchTab('postcards')">Postcards</button>
   <button class="mobile-nav-item"        data-tab="blog"       onclick="switchTab('blog')">Blog Calendar</button>
   <button class="mobile-nav-item"        data-tab="social"     onclick="switchTab('social')">Social Media</button>
@@ -1714,6 +1716,35 @@ header {
 </div>
 </div>
 
+<!-- ═══════════════════════════════ TIMELINE ════════════════════════════ -->
+<div id="tab-timeline" class="tab-panel">
+  <div class="page-header">
+    <h1 class="page-title">Campaign Timeline</h1>
+    <p class="page-subtitle">Gantt view · Apr 2026 – Mar 2027 · Work windows are <strong>doubled</strong> from realistic estimates for buffer planning · Scroll horizontally on smaller screens</p>
+  </div>
+
+  <!-- Legend -->
+  <div class="card" style="margin-bottom:16px;padding:14px 20px">
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-right:4px">Legend</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#7A4A1E;display:inline-block;flex-shrink:0"></span>Blog Post</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#1A3CB4;display:inline-block;flex-shrink:0"></span>Campaign</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#6030AA;display:inline-block;flex-shrink:0"></span>Loyalty</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#E07B00;display:inline-block;flex-shrink:0"></span>Direct Mail</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#1A7A1A;display:inline-block;flex-shrink:0"></span>Key Event</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#C2185B;display:inline-block;flex-shrink:0"></span>Cultural</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#0A5F9A;display:inline-block;flex-shrink:0"></span>Sports</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px"><span style="width:14px;height:14px;border-radius:3px;background:#AE2B42;display:inline-block;flex-shrink:0"></span>Holiday</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;margin-left:auto"><span style="width:14px;height:14px;border-radius:3px;background:rgba(255,59,48,0.55);display:inline-block;flex-shrink:0"></span>Today</span>
+    </div>
+  </div>
+
+  <!-- Gantt Chart -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <div id="ganttChart" style="overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════ MODAL ═══════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
   <div class="modal" id="modal">
@@ -2003,7 +2034,16 @@ const posts = [
     tone:"'It's the Super Bowl. You know what you need. Here's where to start.'",
     spinoffs:["IG carousel","Stories","In-store A-frame + counter card","GBP post"],
     inventory:"Pull cold beer, bourbon, tequila SKUs from Barnet before drafting.",
-    note:"Super Bowl LXII — February 8, 2027. Highest single-day beer sales of Q1." }
+    note:"Super Bowl LXII — February 8, 2027. Highest single-day beer sales of Q1." },
+
+  { id:30, title:"Where to Drink at Vancouver Beaches: The 2026 Summer Guide", date:"Jun 14, 2026", pillar:2, status:"to-draft",
+    cat:"Lifestyle / Local",
+    keyword:"drinking on Vancouver beach / Vancouver beach alcohol / Kits Beach drinks / where to drink outside Vancouver",
+    desc:"Summer solstice hook — publishes June 14, one week before the solstice (June 21). Vancouver's beach drinking program is now permanent: 7 designated beaches, glass-free, 11am–9pm, May–Sep. Beaches: Kitsilano, Jericho, Spanish Banks, Locarno, Second Beach (Stanley Park), John Hendry/Trout Lake, New Brighton. Embed a Google My Maps pin map. Key angle: Kits Beach is 8 minutes from Broadway — strong local CTA. Include a 'what to bring' section with can recommendations by category (craft beer, canned wine, hard seltzer, cider). Note which beaches are NOT permitted: English Bay, Sunset Beach, Third Beach.",
+    tone:"Local authority. Friendly, practical, mildly opinionated. 'Here's where, here's what, grab it on your way.'",
+    spinoffs:["IG carousel — 7 beaches + 7 drink pairings","Stories solstice countdown","GBP post with Kits Beach callout","In-store A-frame: 'Heading to Kits? We're 8 min away'"],
+    inventory:"Pull canned wine, craft beer cans, hard seltzer, cider SKUs from Barnet — cold and in-stock.",
+    note:"June 21 = Summer Solstice AND Father's Day 2026. Publish Jun 14 to catch pre-solstice weekend planners. Beach rules are permanent — update annually with a quick rules refresh." }
 ];
 
 // ─── SOCIAL POSTS ───────────────────────────────────────────────────────
@@ -2789,7 +2829,7 @@ function renderGoogle() {
 const tabLabels = {
   overview:'Overview', blog:'Blog Calendar', social:'Social Media',
   google:'Google', wineclub:'Wine Club', channels:'Channel Matrix',
-  instore:'In-Store', postcards:'Postcards'
+  instore:'In-Store', postcards:'Postcards', timeline:'Timeline'
 };
 
 function switchTab(name) {
@@ -2859,6 +2899,138 @@ function loadChecklist() {
   });
 }
 
+// ─── GANTT DATA ───────────────────────────────────────────────────────────
+const ganttItems = [
+  // ── BLOG POSTS ──
+  { type:'divider', name:'✍  Blog Posts' },
+  { name:"Mother's Day Gift Guide",          cat:"Blog Post",   start:"2026-04-26", end:"2026-05-10", color:"#7A4A1E" },
+  { name:"World Whisky Day",                  cat:"Blog Post",   start:"2026-05-02", end:"2026-05-16", color:"#7A4A1E" },
+  { name:"Father's Day Gift Guide",           cat:"Blog Post",   start:"2026-05-31", end:"2026-06-14", color:"#7A4A1E" },
+  { name:"Summer Solstice — Beach Guide",     cat:"Blog Post",   start:"2026-06-07", end:"2026-06-21", color:"#7A4A1E" },
+  { name:"Vancouver Pride Guide",             cat:"Blog Post",   start:"2026-07-13", end:"2026-07-27", color:"#7A4A1E" },
+  { name:"Canucks Season Opener",             cat:"Blog Post",   start:"2026-09-21", end:"2026-10-05", color:"#7A4A1E" },
+  { name:"Grey Cup Weekend Guide",            cat:"Blog Post",   start:"2026-11-03", end:"2026-11-17", color:"#7A4A1E" },
+  { name:"Super Bowl 2027 Guide",             cat:"Blog Post",   start:"2027-01-21", end:"2027-02-04", color:"#7A4A1E" },
+  // ── CAMPAIGNS & PROGRAMS ──
+  { type:'divider', name:'📢  Campaigns & Programs' },
+  { name:"Grand Crew Loyalty Launch",         cat:"Campaign",    start:"2026-04-01", end:"2026-05-31", color:"#1A3CB4" },
+  { name:"$250 Gift Certificate Draw",        cat:"Loyalty",     start:"2026-05-01", end:"2026-06-30", color:"#6030AA" },
+  { name:"June Postcard Drop",                cat:"Direct Mail", start:"2026-05-04", end:"2026-06-08", color:"#E07B00" },
+  { name:"Holiday Postcard Drop",             cat:"Direct Mail", start:"2026-10-05", end:"2026-11-07", color:"#E07B00" },
+  { name:"Holiday Season Campaign",           cat:"Holiday",     start:"2026-11-27", end:"2026-12-31", color:"#AE2B42" },
+  // ── KEY EVENTS ──
+  { type:'divider', name:'📅  Key Events & Cultural Moments' },
+  { name:"BC Wine Month",                     cat:"Key Event",   start:"2026-04-01", end:"2026-04-30", color:"#1A7A1A" },
+  { name:"Mother's Day",                      cat:"Key Event",   start:"2026-05-10", end:"2026-05-11", color:"#1A7A1A" },
+  { name:"Father's Day / Summer Solstice",    cat:"Key Event",   start:"2026-06-21", end:"2026-06-22", color:"#1A7A1A" },
+  { name:"FIFA Canada 2026",                  cat:"Key Event",   start:"2026-06-11", end:"2026-07-19", color:"#1A7A1A" },
+  { name:"Khatsahlano Festival",              cat:"Key Event",   start:"2026-07-11", end:"2026-07-12", color:"#1A7A1A" },
+  { name:"Vancouver Pride Week",              cat:"Cultural",    start:"2026-07-27", end:"2026-08-03", color:"#C2185B" },
+  { name:"Diwali",                            cat:"Cultural",    start:"2026-10-20", end:"2026-10-29", color:"#C2185B" },
+  { name:"Canucks Regular Season",            cat:"Sports",      start:"2026-10-07", end:"2027-04-01", color:"#0A5F9A" },
+  { name:"Beaujolais Nouveau Release",        cat:"Key Event",   start:"2026-11-16", end:"2026-11-22", color:"#1A7A1A" },
+  { name:"Grey Cup",                          cat:"Sports",      start:"2026-11-20", end:"2026-11-23", color:"#0A5F9A" },
+  { name:"Lunar New Year",                    cat:"Cultural",    start:"2027-01-28", end:"2027-02-15", color:"#C2185B" },
+  { name:"Super Bowl LXII",                   cat:"Sports",      start:"2027-02-05", end:"2027-02-09", color:"#0A5F9A" },
+];
+
+// ─── RENDER GANTT ─────────────────────────────────────────────────────────
+function renderGantt() {
+  const container = document.getElementById('ganttChart');
+  if (!container) return;
+
+  const RANGE_START = new Date('2026-04-01');
+  const RANGE_END   = new Date('2027-03-01');
+  const TOTAL_MS    = RANGE_END - RANGE_START;
+
+  // Build month list
+  const months = [];
+  let cur = new Date(RANGE_START);
+  while (cur < RANGE_END) {
+    months.push(new Date(cur));
+    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+  }
+  const N = months.length;
+
+  const now       = new Date();
+  const todayPct  = Math.max(0, Math.min(100, (now - RANGE_START) / TOTAL_MS * 100));
+
+  function datePct(str) {
+    return Math.max(0, Math.min(100, (new Date(str) - RANGE_START) / TOTAL_MS * 100));
+  }
+  function fmtDate(str) {
+    return new Date(str).toLocaleDateString('en-CA', { month:'short', day:'numeric' });
+  }
+
+  const colGrid = () => {
+    let g = '<div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat('+N+',1fr);pointer-events:none;z-index:1">';
+    months.forEach((_, i) => {
+      g += '<div style="border-left:1px solid var(--border);background:'+(i%2===1?'rgba(0,0,0,0.018)':'transparent')+'"></div>';
+    });
+    g += '</div>';
+    return g;
+  };
+
+  const todayLine = () =>
+    '<div style="position:absolute;top:0;bottom:0;left:'+todayPct+'%;width:2px;background:rgba(255,59,48,0.55);z-index:5;pointer-events:none"></div>';
+
+  let html = '<div style="min-width:960px">';
+
+  // ── Month header ──
+  html += '<div style="display:flex;border-bottom:2px solid var(--border-strong);position:sticky;top:0;z-index:10;background:#fff">';
+  html += '<div style="width:220px;flex-shrink:0;padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-secondary);background:#fff;border-right:1px solid var(--border)">Campaign / Content</div>';
+  html += '<div style="flex:1;display:grid;grid-template-columns:repeat('+N+',1fr)">';
+  months.forEach((m, i) => {
+    const mo  = m.toLocaleString('en-CA', { month:'short' });
+    const yr  = "'"+m.getFullYear().toString().slice(2);
+    const alt = i%2===1;
+    html += '<div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-secondary);border-left:1px solid var(--border);background:'+(alt?'rgba(0,0,0,0.02)':'#fff')+'">'+mo+' '+yr+'</div>';
+  });
+  html += '</div></div>';
+
+  // ── Rows ──
+  let rowIdx = 0;
+  ganttItems.forEach(item => {
+    if (item.type === 'divider') {
+      html += '<div style="display:flex;background:#F2F2F7;border-bottom:1px solid var(--border-strong)">';
+      html += '<div style="width:220px;flex-shrink:0;padding:7px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);border-right:1px solid var(--border)">'+item.name+'</div>';
+      html += '<div style="flex:1;position:relative;min-height:32px">'+colGrid()+todayLine()+'</div>';
+      html += '</div>';
+      return;
+    }
+
+    const bg       = rowIdx%2===0 ? '#ffffff' : 'var(--surface-2)';
+    const leftPct  = datePct(item.start);
+    const rightPct = datePct(item.end);
+    const widthPct = Math.max(0.6, rightPct - leftPct);
+    const startLbl = fmtDate(item.start);
+    const endLbl   = fmtDate(item.end);
+    rowIdx++;
+
+    html += '<div style="display:flex;border-bottom:1px solid var(--border);background:'+bg+';min-height:44px">';
+    // Label
+    html += '<div style="width:220px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;gap:2px">';
+    html += '<div style="font-size:12px;font-weight:500;color:var(--text-primary);line-height:1.35">'+item.name+'</div>';
+    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+item.color+'">'+item.cat+'</div>';
+    html += '</div>';
+    // Track
+    html += '<div style="flex:1;position:relative;overflow:hidden">';
+    html += colGrid();
+    html += todayLine();
+    // Bar
+    html += '<div title="'+item.name+' · '+startLbl+' → '+endLbl+'" style="position:absolute;top:50%;transform:translateY(-50%);left:'+leftPct+'%;width:'+widthPct+'%;height:24px;background:'+item.color+';border-radius:6px;z-index:3;display:flex;align-items:center;padding:0 8px;overflow:hidden;white-space:nowrap;cursor:default;box-shadow:0 1px 4px rgba(0,0,0,0.18)">';
+    if (widthPct > 4.5) {
+      html += '<span style="font-size:10px;color:rgba(255,255,255,0.93);font-weight:500;overflow:hidden;text-overflow:ellipsis">'+startLbl+' → '+endLbl+'</span>';
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────
 renderWineClub();
 renderThisWeek();
@@ -2867,6 +3039,7 @@ renderMatrix();
 renderInstore();
 renderSocial('all');
 renderGoogle();
+renderGantt();
 loadChecklist();
 </script>
 </body>
