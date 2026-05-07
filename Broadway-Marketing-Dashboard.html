@@ -190,10 +190,16 @@ header {
   font-weight: 500;
 }
 .badge-live       { background: var(--live-bg);    color: var(--live); }
-.badge-draft-ready{ background: var(--ready-bg);   color: var(--ready); }
+.badge-working    { background: var(--ready-bg);   color: var(--ready); }
+.badge-draft-ready{ background: var(--ready-bg);   color: var(--ready); } /* kept for compat */
 .badge-drafted    { background: var(--drafted-bg); color: var(--drafted); }
 .badge-overdue    { background: var(--overdue-bg); color: var(--overdue); }
 .badge-to-draft   { background: var(--todraft-bg); color: var(--todraft); border:1px solid var(--border); }
+/* Overdue dot — red pip overlaid on status badge */
+.badge-wrap       { position:relative; display:inline-flex; }
+.overdue-dot      { position:absolute; top:-3px; right:-3px; width:8px; height:8px;
+                    background:var(--overdue); border-radius:50%; border:1.5px solid #fff;
+                    pointer-events:none; }
 
 .pillar-badge {
   display: inline-block;
@@ -1161,10 +1167,12 @@ header {
 
   <div class="filter-bar" id="blogFilterBar">
     <span class="text-xs" style="margin-right:4px">Filter:</span>
-    <button class="filter-btn active" onclick="filterBlog('all', this)">All posts</button>
-    <button class="filter-btn" onclick="filterBlog('status-overdue', this)" style="border-color:#E09090;color:var(--overdue)">Overdue</button>
-    <button class="filter-btn" onclick="filterBlog('status-draft-ready', this)">Draft Ready</button>
+    <button class="filter-btn active" onclick="filterBlog('all', this)">All</button>
+    <button class="filter-btn" onclick="filterBlog('overdue', this)" style="border-color:#E09090;color:var(--overdue)">⚠ Overdue</button>
+    <button class="filter-btn" onclick="filterBlog('status-working', this)">Working</button>
     <button class="filter-btn" onclick="filterBlog('status-drafted', this)">Drafted</button>
+    <button class="filter-btn" onclick="filterBlog('status-to-draft', this)">To Draft</button>
+    <button class="filter-btn" onclick="filterBlog('status-live', this)">Live</button>
     <button class="filter-btn p1" onclick="filterBlog('pillar-1', this)">Pillar 1</button>
     <button class="filter-btn p2" onclick="filterBlog('pillar-2', this)">Pillar 2</button>
     <button class="filter-btn p3" onclick="filterBlog('pillar-3', this)">Pillar 3</button>
@@ -1790,12 +1798,23 @@ const pillars = {
 };
 
 const statusInfo = {
-  "live":        { label: "Live",        cls: "badge-live" },
-  "draft-ready": { label: "Draft Ready", cls: "badge-draft-ready" },
-  "drafted":     { label: "Drafted",     cls: "badge-drafted" },
-  "overdue":     { label: "Overdue",     cls: "badge-overdue" },
-  "to-draft":    { label: "To Draft",    cls: "badge-to-draft" }
+  "to-draft":    { label: "To Draft", cls: "badge-to-draft" },
+  "drafted":     { label: "Drafted",  cls: "badge-drafted"  },
+  "working":     { label: "Working",  cls: "badge-working"  },
+  "live":        { label: "Live",     cls: "badge-live"     },
+  // legacy aliases so old data never breaks
+  "draft-ready": { label: "Working",  cls: "badge-working"  },
+  "to-create":   { label: "To Draft", cls: "badge-to-draft" },
+  "overdue":     { label: "Overdue",  cls: "badge-overdue"  }
 };
+
+// Auto-computed: any non-live post whose publish date has passed
+function isOverdue(post) {
+  if (post.status === 'live') return false;
+  const d = new Date(post.date);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return d < today;
+}
 
 const posts = [
   { id:1, title:"Liquor Delivery in Kitsilano: Wine, Beer, Spirits & More", date:"Apr 21, 2026", pillar:3, status:"live",
@@ -1806,7 +1825,7 @@ const posts = [
     spinoffs:["Instagram static post","GBP services update"],
     inventory:null, note:null },
 
-  { id:2, title:"BC Wine in Kitsilano: Why We Stay Local", date:"Apr 27, 2026", pillar:3, status:"draft-ready",
+  { id:2, title:"BC Wine in Kitsilano: Why We Stay Local", date:"Apr 27, 2026", pillar:3, status:"working",
     cat:"Wine",
     keyword:"BC wine Kitsilano / Okanagan wine Vancouver",
     desc:"Makes the case for BC VQA as a first choice, not a consolation. Names specific producers we stock. Ties into BC Wine Month (all of April).",
@@ -1814,7 +1833,7 @@ const posts = [
     spinoffs:["Instagram carousel (3 BC bottles)","Email newsletter mention","In-store BC VQA shelf card"],
     inventory:null, note:"Publish this week." },
 
-  { id:3, title:"Grand Crew: How Our Loyalty Program Works", date:"May 31, 2026", pillar:4, status:"draft-ready",
+  { id:3, title:"Grand Crew: How Our Loyalty Program Works", date:"May 31, 2026", pillar:4, status:"working",
     cat:"Store",
     keyword:"Broadway Beer Wine Spirits loyalty program / Grand Crew Vancouver",
     desc:"Clear, plain-language explanation of Grand Crew. What members earn, how they redeem, why we built it. Applies across all purchases — wine, beer, spirits, RTDs.",
@@ -2070,97 +2089,97 @@ const posts = [
 const socialPosts = [
   // APRIL
   { id:1,  month:"April",   date:"Apr 22", platform:"ig-static",   anchor:"BC Wine Month",     title:"Okanagan is ready. Are you?",                      desc:"BC Wine Month section announcement. Shot of our BC VQA wall. Stack of producers we believe in.", status:"live" },
-  { id:2,  month:"May",     date:"May 31", platform:"ig-carousel", anchor:"Grand Crew Launch",  title:"Grand Crew is live. Here's what you get.",          desc:"4-slide carousel — what Grand Crew is, how you earn, how you redeem, how to sign up.", status:"to-create" },
-  { id:3,  month:"April",   date:"Apr 28", platform:"stories",     anchor:"Mother's Day",       title:"Something's coming for the moms who know their wine.", desc:"Teaser story. Single frame, no text overload. Builds anticipation before May 1 guide publishes.", status:"to-create" },
-  { id:4,  month:"May",     date:"May 31", platform:"facebook",    anchor:"Grand Crew Launch",  title:"Grand Crew loyalty is live — join in store or online.", desc:"Cross-post of Grand Crew announcement. Facebook skews older demographic — this audience is loyal and high-spend.", status:"to-create" },
+  { id:2,  month:"May",     date:"May 31", platform:"ig-carousel", anchor:"Grand Crew Launch",  title:"Grand Crew is live. Here's what you get.",          desc:"4-slide carousel — what Grand Crew is, how you earn, how you redeem, how to sign up.", status:"to-draft" },
+  { id:3,  month:"April",   date:"Apr 28", platform:"stories",     anchor:"Mother's Day",       title:"Something's coming for the moms who know their wine.", desc:"Teaser story. Single frame, no text overload. Builds anticipation before May 1 guide publishes.", status:"to-draft" },
+  { id:4,  month:"May",     date:"May 31", platform:"facebook",    anchor:"Grand Crew Launch",  title:"Grand Crew loyalty is live — join in store or online.", desc:"Cross-post of Grand Crew announcement. Facebook skews older demographic — this audience is loyal and high-spend.", status:"to-draft" },
   // MAY
-  { id:5,  month:"May",     date:"May 1",  platform:"ig-reel",     anchor:"Mother's Day",       title:"Gift wrapping in-store — no assembly required.",     desc:"Reel of staff wrapping bottles with local artist cards. 15–30 seconds. Music-led, no voiceover needed.", status:"to-create" },
+  { id:5,  month:"May",     date:"May 1",  platform:"ig-reel",     anchor:"Mother's Day",       title:"Gift wrapping in-store — no assembly required.",     desc:"Reel of staff wrapping bottles with local artist cards. 15–30 seconds. Music-led, no voiceover needed.", status:"to-draft" },
   { id:6,  month:"May",     date:"May 1",  platform:"ig-carousel", anchor:"Mother's Day",       title:"7 bottles for Mother's Day. Real prices, real opinions.", desc:"Full guide carousel. Each slide = one bottle. Photo, name, price, one-line tasting note. Link to blog post.", status:"drafted" },
-  { id:7,  month:"May",     date:"May 5",  platform:"stories",     anchor:"Mother's Day",       title:"5 days. Bring the good wine.",                       desc:"Simple countdown story. One line of text. One bottle photo. No overthinking.", status:"to-create" },
-  { id:8,  month:"May",     date:"May 9",  platform:"stories",     anchor:"Mother's Day",       title:"Last chance — gift wrapping closes tonight.",         desc:"Final push. Urgency without desperation. Drives same-day foot traffic.", status:"to-create" },
-  { id:9,  month:"May",     date:"May 15", platform:"ig-reel",     anchor:"Spirits Guide",      title:"5 bottles. Every occasion covered.",                  desc:"Bar shelf tour Reel. Staff picks one per category — gin, tequila, rum, whisky, vodka. Confident, fast-paced.", status:"to-create" },
-  { id:10, month:"May",     date:"May 16", platform:"ig-carousel", anchor:"Spirits Guide",      title:"The spirits shelf: one bottle per category.",         desc:"6-slide carousel. One spirit, one recommendation, one reason. Pairs with blog post launch.", status:"to-create" },
-  { id:11, month:"May",     date:"May 26", platform:"ig-carousel", anchor:"BC Wine Month",      title:"BC Wine Month. What we actually reached for.",        desc:"Wrap-up carousel. The bottles that moved. Data-informed from Barnet. Personal and specific.", status:"to-create" },
-  { id:12, month:"May",     date:"May 26", platform:"facebook",    anchor:"BC Wine Month",      title:"BC Wine Month wrap: our picks, your shelf.",          desc:"Cross-post BC Wine Month wrap carousel. Facebook audience responds well to local producer content.", status:"to-create" },
+  { id:7,  month:"May",     date:"May 5",  platform:"stories",     anchor:"Mother's Day",       title:"5 days. Bring the good wine.",                       desc:"Simple countdown story. One line of text. One bottle photo. No overthinking.", status:"to-draft" },
+  { id:8,  month:"May",     date:"May 9",  platform:"stories",     anchor:"Mother's Day",       title:"Last chance — gift wrapping closes tonight.",         desc:"Final push. Urgency without desperation. Drives same-day foot traffic.", status:"to-draft" },
+  { id:9,  month:"May",     date:"May 15", platform:"ig-reel",     anchor:"Spirits Guide",      title:"5 bottles. Every occasion covered.",                  desc:"Bar shelf tour Reel. Staff picks one per category — gin, tequila, rum, whisky, vodka. Confident, fast-paced.", status:"to-draft" },
+  { id:10, month:"May",     date:"May 16", platform:"ig-carousel", anchor:"Spirits Guide",      title:"The spirits shelf: one bottle per category.",         desc:"6-slide carousel. One spirit, one recommendation, one reason. Pairs with blog post launch.", status:"to-draft" },
+  { id:11, month:"May",     date:"May 26", platform:"ig-carousel", anchor:"BC Wine Month",      title:"BC Wine Month. What we actually reached for.",        desc:"Wrap-up carousel. The bottles that moved. Data-informed from Barnet. Personal and specific.", status:"to-draft" },
+  { id:12, month:"May",     date:"May 26", platform:"facebook",    anchor:"BC Wine Month",      title:"BC Wine Month wrap: our picks, your shelf.",          desc:"Cross-post BC Wine Month wrap carousel. Facebook audience responds well to local producer content.", status:"to-draft" },
   // JUNE
-  { id:13, month:"June",    date:"Jun 1",  platform:"stories",     anchor:"Postcard Drop",      title:"Something just landed in your mailbox, Grand Crew.", desc:"Tease the postcard arrival. Don't show it yet. Build curiosity.", status:"to-create" },
-  { id:14, month:"June",    date:"Jun 1",  platform:"ig-static",   anchor:"Postcard Drop",      title:"Win a $250 gift card. Check your mailbox.",          desc:"Contest announcement post. Clean photo of postcard. Entry details in caption.", status:"to-create" },
-  { id:15, month:"June",    date:"Jun 8",  platform:"ig-reel",     anchor:"RTDs",               title:"The fridge changed. Here's what's in it.",           desc:"Fridge tour Reel. Fast cuts, real bottles, no hype. RTD category feature to pair with blog post.", status:"to-create" },
-  { id:16, month:"June",    date:"Jun 8",  platform:"stories",     anchor:"RTDs",               title:"Poll: how do you feel about RTDs?",                   desc:"Interactive poll story. Drives engagement and gives you genuine audience data on the category.", status:"to-create" },
-  { id:17, month:"June",    date:"Jun 9",  platform:"stories",     anchor:"Father's Day",       title:"Something for the dad who has opinions about whisky.", desc:"Teaser story. Single frame. One bottle. No text overload. Builds anticipation before the gift guide drops Jun 14.", status:"to-create" },
-  { id:30, month:"June",    date:"Jun 14", platform:"ig-reel",     anchor:"Father's Day",       title:"The whisky shelf. What to get, what to avoid, what we'd give our own dad.", desc:"60-second shelf tour Reel. Staff-led, personal, opinionated. Pairs with blog post launch. No production overhead needed.", status:"to-create" },
-  { id:31, month:"June",    date:"Jun 14", platform:"ig-carousel", anchor:"Father's Day",       title:"Father's Day picks. Every category, real prices.",    desc:"5-slide carousel — whisky, craft beer, rum, a wildcard spirit, and gift wrapping offer. One bottle per slide with price and one-line note.", status:"to-create" },
-  { id:32, month:"June",    date:"Jun 14", platform:"facebook",    anchor:"Father's Day",       title:"Father's Day gift guide is up. Whisky, beer, and something unexpected.", desc:"Cross-post of carousel + link to blog post. Facebook demographic skews to the gift-buyer age group — this lands well here.", status:"to-create" },
-  { id:33, month:"June",    date:"Jun 18", platform:"stories",     anchor:"Father's Day",       title:"3 days. Gift wrapping station is open.",              desc:"Countdown story. Urgency without desperation. Photo of wrapped bottle. Drives foot traffic in the final push.", status:"to-create" },
-  { id:34, month:"June",    date:"Jun 20", platform:"stories",     anchor:"Father's Day",       title:"Last chance — gift wrapping closes tonight.",         desc:"Final push story. One line. One bottle. Same formula that works for Mother's Day.", status:"to-create" },
-  { id:18, month:"June",    date:"Jun 13", platform:"stories",     anchor:"FIFA",               title:"Canada plays at BC Place. The fridge is stocked.",   desc:"Match day teaser. Simple, timely, local. No overthinking.", status:"to-create" },
-  { id:18, month:"June",    date:"Jun 15", platform:"ig-carousel", anchor:"FIFA / World Cup",   title:"One drink per country on the pitch.",                 desc:"Most shareable post of the year. Wine, beer, and spirits per nation. Specific bottles, real prices.", status:"to-create" },
-  { id:19, month:"June",    date:"Jun 22", platform:"ig-reel",     anchor:"Greek Day",          title:"Greek wine. We've been getting ready.",               desc:"Greek wine and ouzo shelf tour Reel. Bilingual if possible. Ties to blog post launch.", status:"to-create" },
-  { id:20, month:"June",    date:"Jun 24", platform:"stories",     anchor:"Greek Day",          title:"4 days to Greek Day. The ouzo is in.",               desc:"Countdown story. Feature a different Greek bottle or producer each day.", status:"to-create" },
-  { id:21, month:"June",    date:"Jun 28", platform:"ig-static",   anchor:"Greek Day",          title:"Happy Greek Day. Come see what we've got.",          desc:"Day-of post. Bold, celebratory. Photo of the Greek section or front of store.", status:"to-create" },
-  { id:22, month:"June",    date:"Jun 28", platform:"facebook",    anchor:"Greek Day",          title:"It's Greek Day on Broadway. We're ready.",           desc:"Facebook event post. Cross-post with local neighbourhood groups.", status:"to-create" },
+  { id:13, month:"June",    date:"Jun 1",  platform:"stories",     anchor:"Postcard Drop",      title:"Something just landed in your mailbox, Grand Crew.", desc:"Tease the postcard arrival. Don't show it yet. Build curiosity.", status:"to-draft" },
+  { id:14, month:"June",    date:"Jun 1",  platform:"ig-static",   anchor:"Postcard Drop",      title:"Win a $250 gift card. Check your mailbox.",          desc:"Contest announcement post. Clean photo of postcard. Entry details in caption.", status:"to-draft" },
+  { id:15, month:"June",    date:"Jun 8",  platform:"ig-reel",     anchor:"RTDs",               title:"The fridge changed. Here's what's in it.",           desc:"Fridge tour Reel. Fast cuts, real bottles, no hype. RTD category feature to pair with blog post.", status:"to-draft" },
+  { id:16, month:"June",    date:"Jun 8",  platform:"stories",     anchor:"RTDs",               title:"Poll: how do you feel about RTDs?",                   desc:"Interactive poll story. Drives engagement and gives you genuine audience data on the category.", status:"to-draft" },
+  { id:17, month:"June",    date:"Jun 9",  platform:"stories",     anchor:"Father's Day",       title:"Something for the dad who has opinions about whisky.", desc:"Teaser story. Single frame. One bottle. No text overload. Builds anticipation before the gift guide drops Jun 14.", status:"to-draft" },
+  { id:30, month:"June",    date:"Jun 14", platform:"ig-reel",     anchor:"Father's Day",       title:"The whisky shelf. What to get, what to avoid, what we'd give our own dad.", desc:"60-second shelf tour Reel. Staff-led, personal, opinionated. Pairs with blog post launch. No production overhead needed.", status:"to-draft" },
+  { id:31, month:"June",    date:"Jun 14", platform:"ig-carousel", anchor:"Father's Day",       title:"Father's Day picks. Every category, real prices.",    desc:"5-slide carousel — whisky, craft beer, rum, a wildcard spirit, and gift wrapping offer. One bottle per slide with price and one-line note.", status:"to-draft" },
+  { id:32, month:"June",    date:"Jun 14", platform:"facebook",    anchor:"Father's Day",       title:"Father's Day gift guide is up. Whisky, beer, and something unexpected.", desc:"Cross-post of carousel + link to blog post. Facebook demographic skews to the gift-buyer age group — this lands well here.", status:"to-draft" },
+  { id:33, month:"June",    date:"Jun 18", platform:"stories",     anchor:"Father's Day",       title:"3 days. Gift wrapping station is open.",              desc:"Countdown story. Urgency without desperation. Photo of wrapped bottle. Drives foot traffic in the final push.", status:"to-draft" },
+  { id:34, month:"June",    date:"Jun 20", platform:"stories",     anchor:"Father's Day",       title:"Last chance — gift wrapping closes tonight.",         desc:"Final push story. One line. One bottle. Same formula that works for Mother's Day.", status:"to-draft" },
+  { id:18, month:"June",    date:"Jun 13", platform:"stories",     anchor:"FIFA",               title:"Canada plays at BC Place. The fridge is stocked.",   desc:"Match day teaser. Simple, timely, local. No overthinking.", status:"to-draft" },
+  { id:18, month:"June",    date:"Jun 15", platform:"ig-carousel", anchor:"FIFA / World Cup",   title:"One drink per country on the pitch.",                 desc:"Most shareable post of the year. Wine, beer, and spirits per nation. Specific bottles, real prices.", status:"to-draft" },
+  { id:19, month:"June",    date:"Jun 22", platform:"ig-reel",     anchor:"Greek Day",          title:"Greek wine. We've been getting ready.",               desc:"Greek wine and ouzo shelf tour Reel. Bilingual if possible. Ties to blog post launch.", status:"to-draft" },
+  { id:20, month:"June",    date:"Jun 24", platform:"stories",     anchor:"Greek Day",          title:"4 days to Greek Day. The ouzo is in.",               desc:"Countdown story. Feature a different Greek bottle or producer each day.", status:"to-draft" },
+  { id:21, month:"June",    date:"Jun 28", platform:"ig-static",   anchor:"Greek Day",          title:"Happy Greek Day. Come see what we've got.",          desc:"Day-of post. Bold, celebratory. Photo of the Greek section or front of store.", status:"to-draft" },
+  { id:22, month:"June",    date:"Jun 28", platform:"facebook",    anchor:"Greek Day",          title:"It's Greek Day on Broadway. We're ready.",           desc:"Facebook event post. Cross-post with local neighbourhood groups.", status:"to-draft" },
   // JULY
-  { id:23, month:"July",    date:"Jul 1",  platform:"stories",     anchor:"Canada Day",         title:"Happy Canada Day. Today's shelf is all-Canadian.",  desc:"Day-of story. Quick product tour of the Canada Day display.", status:"to-create" },
-  { id:24, month:"July",    date:"Jul 1",  platform:"ig-carousel", anchor:"Canada Day",         title:"BC wine. Canadian whisky. Craft beer. All in.",      desc:"3-slide carousel — one pick per category. The most genuinely multi-category post of the year.", status:"to-create" },
-  { id:25, month:"July",    date:"Jul 6",  platform:"ig-reel",     anchor:"BC Craft Beer",      title:"We're a beer shop. Let us prove it.",                desc:"Fridge and shelf walk Reel. Feature 3 BC breweries. Confident tone — we know beer.", status:"to-create" },
-  { id:26, month:"July",    date:"Jul 6",  platform:"ig-carousel", anchor:"BC Craft Beer",      title:"3 BC breweries worth knowing right now.",            desc:"One brewery per slide — story, style, the bottle we stock. Pairs with blog post.", status:"to-create" },
-  { id:27, month:"July",    date:"Jul 11", platform:"stories",     anchor:"Khatsahlano",        title:"Khatsahlano morning. Cold fridge is stocked.",       desc:"Opening-morning story. Real time. Fridge, cold whites, RTDs at the front. Get in early.", status:"to-create" },
-  { id:28, month:"July",    date:"Jul 13", platform:"ig-reel",     anchor:"Khatsahlano",        title:"What 150,000 people on West 4th drink.",             desc:"Post-event recap Reel. What moved, what surprised us, what we'd stock differently.", status:"to-create" },
-  { id:29, month:"July",    date:"Jul 20", platform:"ig-reel",     anchor:"The Fridge",         title:"The fridge. Most people don't know it exists.",      desc:"Premium wine fridge reveal Reel. What's in it, why it's there, how to buy. A genuine differentiator.", status:"to-create" },
+  { id:23, month:"July",    date:"Jul 1",  platform:"stories",     anchor:"Canada Day",         title:"Happy Canada Day. Today's shelf is all-Canadian.",  desc:"Day-of story. Quick product tour of the Canada Day display.", status:"to-draft" },
+  { id:24, month:"July",    date:"Jul 1",  platform:"ig-carousel", anchor:"Canada Day",         title:"BC wine. Canadian whisky. Craft beer. All in.",      desc:"3-slide carousel — one pick per category. The most genuinely multi-category post of the year.", status:"to-draft" },
+  { id:25, month:"July",    date:"Jul 6",  platform:"ig-reel",     anchor:"BC Craft Beer",      title:"We're a beer shop. Let us prove it.",                desc:"Fridge and shelf walk Reel. Feature 3 BC breweries. Confident tone — we know beer.", status:"to-draft" },
+  { id:26, month:"July",    date:"Jul 6",  platform:"ig-carousel", anchor:"BC Craft Beer",      title:"3 BC breweries worth knowing right now.",            desc:"One brewery per slide — story, style, the bottle we stock. Pairs with blog post.", status:"to-draft" },
+  { id:27, month:"July",    date:"Jul 11", platform:"stories",     anchor:"Khatsahlano",        title:"Khatsahlano morning. Cold fridge is stocked.",       desc:"Opening-morning story. Real time. Fridge, cold whites, RTDs at the front. Get in early.", status:"to-draft" },
+  { id:28, month:"July",    date:"Jul 13", platform:"ig-reel",     anchor:"Khatsahlano",        title:"What 150,000 people on West 4th drink.",             desc:"Post-event recap Reel. What moved, what surprised us, what we'd stock differently.", status:"to-draft" },
+  { id:29, month:"July",    date:"Jul 20", platform:"ig-reel",     anchor:"The Fridge",         title:"The fridge. Most people don't know it exists.",      desc:"Premium wine fridge reveal Reel. What's in it, why it's there, how to buy. A genuine differentiator.", status:"to-draft" },
   // AUGUST
-  { id:30, month:"August",  date:"Aug 3",  platform:"ig-carousel", anchor:"Grower Champagne",   title:"Moët is fine. Here's what we actually reach for.",   desc:"Small house vs big house carousel. 4–5 grower producers with brief notes. Opinionated and specific.", status:"to-create" },
-  { id:31, month:"August",  date:"Aug 17", platform:"ig-carousel", anchor:"Liqueur Shelf",      title:"The liqueur shelf. Let us show you around.",         desc:"5 bottles, 5 uses carousel. From Aperol to Chartreuse. Approachable entry, aspirational close.", status:"to-create" },
+  { id:30, month:"August",  date:"Aug 3",  platform:"ig-carousel", anchor:"Grower Champagne",   title:"Moët is fine. Here's what we actually reach for.",   desc:"Small house vs big house carousel. 4–5 grower producers with brief notes. Opinionated and specific.", status:"to-draft" },
+  { id:31, month:"August",  date:"Aug 17", platform:"ig-carousel", anchor:"Liqueur Shelf",      title:"The liqueur shelf. Let us show you around.",         desc:"5 bottles, 5 uses carousel. From Aperol to Chartreuse. Approachable entry, aspirational close.", status:"to-draft" },
   // SEPTEMBER
-  { id:32, month:"September",date:"Sep 7", platform:"ig-carousel", anchor:"International Beer",  title:"5 countries. 5 beers. All on our shelf.",           desc:"Belgium, Germany, Japan, UK, Mexico. One bottle per country. Photography-led.", status:"to-create" },
-  { id:33, month:"September",date:"Sep 14",platform:"ig-carousel", anchor:"Fall Okanagan",       title:"New Okanagan vintages are landing. Here's what arrived.", desc:"New arrivals carousel. Pull from Barnet. Real data, real bottles, real excitement.", status:"to-create" },
+  { id:32, month:"September",date:"Sep 7", platform:"ig-carousel", anchor:"International Beer",  title:"5 countries. 5 beers. All on our shelf.",           desc:"Belgium, Germany, Japan, UK, Mexico. One bottle per country. Photography-led.", status:"to-draft" },
+  { id:33, month:"September",date:"Sep 14",platform:"ig-carousel", anchor:"Fall Okanagan",       title:"New Okanagan vintages are landing. Here's what arrived.", desc:"New arrivals carousel. Pull from Barnet. Real data, real bottles, real excitement.", status:"to-draft" },
   // OCTOBER
-  { id:34, month:"October", date:"Oct 5",  platform:"ig-carousel", anchor:"Thanksgiving",        title:"The full Thanksgiving table. Wine, beer, and the whisky that finishes the night.", desc:"5-slide guide covering every drinker at the table. Pairs with blog post.", status:"to-create" },
-  { id:35, month:"October", date:"Oct 12", platform:"stories",     anchor:"Thanksgiving",        title:"Happy Thanksgiving. We hope the table was full.",  desc:"Day-of story. Warm, neighbourhood tone. No hard sell.", status:"to-create" },
-  { id:36, month:"October", date:"Oct 26", platform:"ig-reel",     anchor:"Halloween",           title:"Orange wine for the colour. Mezcal for the smoke.", desc:"Halloween shelf lineup Reel. Multi-category — orange wine, dark rum, smoky Scotch, weird labels.", status:"to-create" },
-  { id:37, month:"October", date:"Oct 31", platform:"stories",     anchor:"Halloween",           title:"Happy Halloween from the store that's been here since 1986.", desc:"Day-of story. One spooky bottle. One line. Done.", status:"to-create" },
+  { id:34, month:"October", date:"Oct 5",  platform:"ig-carousel", anchor:"Thanksgiving",        title:"The full Thanksgiving table. Wine, beer, and the whisky that finishes the night.", desc:"5-slide guide covering every drinker at the table. Pairs with blog post.", status:"to-draft" },
+  { id:35, month:"October", date:"Oct 12", platform:"stories",     anchor:"Thanksgiving",        title:"Happy Thanksgiving. We hope the table was full.",  desc:"Day-of story. Warm, neighbourhood tone. No hard sell.", status:"to-draft" },
+  { id:36, month:"October", date:"Oct 26", platform:"ig-reel",     anchor:"Halloween",           title:"Orange wine for the colour. Mezcal for the smoke.", desc:"Halloween shelf lineup Reel. Multi-category — orange wine, dark rum, smoky Scotch, weird labels.", status:"to-draft" },
+  { id:37, month:"October", date:"Oct 31", platform:"stories",     anchor:"Halloween",           title:"Happy Halloween from the store that's been here since 1986.", desc:"Day-of story. One spooky bottle. One line. Done.", status:"to-draft" },
   // NOVEMBER
-  { id:38, month:"November",date:"Nov 15", platform:"ig-reel",     anchor:"Sons of Vancouver",   title:"One still. A very clear idea of what BC spirits should taste like.", desc:"Distillery feature Reel. Sons of Vancouver story, the bottles, why we stock them. Template for future distillery posts.", status:"to-create" },
-  { id:39, month:"November",date:"Nov 16", platform:"ig-carousel", anchor:"Beaujolais Nouveau",  title:"Beaujolais Nouveau. What to expect.",               desc:"The history, the ritual, the bottles. Playful but specific. Pairs with blog post.", status:"to-create" },
-  { id:40, month:"November",date:"Nov 19", platform:"ig-reel",     anchor:"Beaujolais Nouveau",  title:"The first pour. Every year.",                       desc:"Night-of Reel. First bottle opened. It's silly and it's perfect.", status:"to-create" },
-  { id:41, month:"November",date:"Nov 28", platform:"ig-static",   anchor:"Holiday Season",      title:"The holiday gift display is up. Come see it.",      desc:"Gift display reveal. The visual anchor for all of December's content.", status:"to-create" },
+  { id:38, month:"November",date:"Nov 15", platform:"ig-reel",     anchor:"Sons of Vancouver",   title:"One still. A very clear idea of what BC spirits should taste like.", desc:"Distillery feature Reel. Sons of Vancouver story, the bottles, why we stock them. Template for future distillery posts.", status:"to-draft" },
+  { id:39, month:"November",date:"Nov 16", platform:"ig-carousel", anchor:"Beaujolais Nouveau",  title:"Beaujolais Nouveau. What to expect.",               desc:"The history, the ritual, the bottles. Playful but specific. Pairs with blog post.", status:"to-draft" },
+  { id:40, month:"November",date:"Nov 19", platform:"ig-reel",     anchor:"Beaujolais Nouveau",  title:"The first pour. Every year.",                       desc:"Night-of Reel. First bottle opened. It's silly and it's perfect.", status:"to-draft" },
+  { id:41, month:"November",date:"Nov 28", platform:"ig-static",   anchor:"Holiday Season",      title:"The holiday gift display is up. Come see it.",      desc:"Gift display reveal. The visual anchor for all of December's content.", status:"to-draft" },
   // DECEMBER
-  { id:42, month:"December",date:"Dec 1",  platform:"stories",     anchor:"Holiday Season",      title:"Custom gift wrapping. Now open for the season.",    desc:"Story announcing gift wrapping is live. Update weekly with featured bundle.", status:"to-create" },
-  { id:43, month:"December",date:"Dec 5",  platform:"ig-carousel", anchor:"Holiday Season",      title:"The gift box edit. What we actually build.",         desc:"Build process carousel. Wine + spirits + food combinations. $50/$75/$100/$150/$200 tiers.", status:"to-create" },
-  { id:44, month:"December",date:"Dec 15", platform:"ig-reel",     anchor:"NYE Sparkling",       title:"The sparkling shelf. Every budget, every style.",   desc:"Reel across Champagne, Cremant, Cava, Prosecco, BC sparkling. Specific bottles, specific prices.", status:"to-create" },
-  { id:45, month:"December",date:"Dec 20", platform:"stories",     anchor:"Holiday Season",      title:"5 days left. Last call for gift wrapping.",         desc:"Urgency story. Not aggressive. Just useful. Drives final-week foot traffic.", status:"to-create" },
-  { id:46, month:"December",date:"Dec 30", platform:"ig-carousel", anchor:"NYE Sparkling",       title:"What to bring for New Year's Eve. The honest guide.", desc:"Budget guide — under $30, $30–60, $60–100, $100+. Named bottles, named prices, named opinions.", status:"to-create" },
+  { id:42, month:"December",date:"Dec 1",  platform:"stories",     anchor:"Holiday Season",      title:"Custom gift wrapping. Now open for the season.",    desc:"Story announcing gift wrapping is live. Update weekly with featured bundle.", status:"to-draft" },
+  { id:43, month:"December",date:"Dec 5",  platform:"ig-carousel", anchor:"Holiday Season",      title:"The gift box edit. What we actually build.",         desc:"Build process carousel. Wine + spirits + food combinations. $50/$75/$100/$150/$200 tiers.", status:"to-draft" },
+  { id:44, month:"December",date:"Dec 15", platform:"ig-reel",     anchor:"NYE Sparkling",       title:"The sparkling shelf. Every budget, every style.",   desc:"Reel across Champagne, Cremant, Cava, Prosecco, BC sparkling. Specific bottles, specific prices.", status:"to-draft" },
+  { id:45, month:"December",date:"Dec 20", platform:"stories",     anchor:"Holiday Season",      title:"5 days left. Last call for gift wrapping.",         desc:"Urgency story. Not aggressive. Just useful. Drives final-week foot traffic.", status:"to-draft" },
+  { id:46, month:"December",date:"Dec 30", platform:"ig-carousel", anchor:"NYE Sparkling",       title:"What to bring for New Year's Eve. The honest guide.", desc:"Budget guide — under $30, $30–60, $60–100, $100+. Named bottles, named prices, named opinions.", status:"to-draft" },
 
   // ── WORLD DAYS ──────────────────────────────────────────────────────────
-  { id:50, month:"May",      date:"May 13", platform:"stories",     anchor:"World Whisky Day",   title:"World Whisky Day is Saturday. Here's our pick.",      desc:"Teaser story. One bottle. One line. Drives people in before the weekend.", status:"to-create" },
-  { id:51, month:"May",      date:"May 16", platform:"ig-carousel", anchor:"World Whisky Day",   title:"Three whiskies. Every budget. World Whisky Day.",     desc:"3-slide carousel — starter, step-up, splurge. Specific bottles, real prices, one-line note each. Pairs with blog post.", status:"to-create" },
-  { id:52, month:"May",      date:"May 28", platform:"stories",     anchor:"Chardonnay Day",     title:"International Chardonnay Day. The one that changed our minds.", desc:"Single story. One bottle of Chardonnay that surprises. Short caption. Not every Chardonnay is what you remember.", status:"to-create" },
-  { id:53, month:"June",     date:"Jun 12", platform:"stories",     anchor:"Rosé Day",           title:"International Rosé Day. The cold shelf is ready.",    desc:"Day-of story. Photo of the cold rosé shelf. One line. Drives foot traffic for the weekend.", status:"to-create" },
-  { id:54, month:"June",     date:"Jun 13", platform:"ig-carousel", anchor:"Gin Day",            title:"International Gin Day. The gins worth knowing.",      desc:"3-slide carousel — floral, citrus-led, and one unexpected gin. Real bottles from our shelf. Pairs with a cocktail suggestion.", status:"to-create" },
-  { id:55, month:"July",     date:"Jul 11", platform:"ig-carousel", anchor:"World Rum Day",      title:"World Rum Day + Khatsahlano. The overlap we didn't plan.", desc:"Rum feature carousel on the day of Khatsahlano. Aged rum, white rum, agricole. Timing is genuinely perfect — rum is a summer drink.", status:"to-create" },
-  { id:56, month:"July",     date:"Jul 24", platform:"stories",     anchor:"Tequila Day",        title:"National Tequila Day. Not the cheap stuff.",          desc:"Story featuring our blanco, reposado, and one mezcal. Short and specific. No lime jokes.", status:"to-create" },
-  { id:57, month:"July",     date:"Jul 24", platform:"ig-static",   anchor:"Tequila Day",        title:"Tequila is not a shot. Three bottles that prove it.", desc:"Static post — 3 tequilas (blanco, reposado, mezcal), prices, one-line note. Clean product photography.", status:"to-create" },
-  { id:58, month:"August",   date:"Aug 6",  platform:"ig-reel",     anchor:"World IPA Day",      title:"IPA Day. The fridge doesn't lie.",                   desc:"Fridge walk Reel — lead with the IPAs. West Coast, hazy, session. 30 seconds, no voiceover. Let the labels do the work.", status:"to-create" },
-  { id:59, month:"August",   date:"Aug 7",  platform:"ig-carousel", anchor:"International Beer Day", title:"International Beer Day. Five styles, five countries.", desc:"One beer style per country — IPA (USA/Canada), Wit (Belgium), Lager (Germany), Stout (Ireland), Pilsner (Czechia). Real bottles from our shelf.", status:"to-create" },
-  { id:60, month:"August",   date:"Aug 18", platform:"stories",     anchor:"Pinot Noir Day",     title:"World Pinot Noir Day. The one we keep going back to.", desc:"Single story. One Pinot Noir — BC, Burgundy, or Oregon. One reason. Day-of.", status:"to-create" },
-  { id:61, month:"September",date:"Sep 3",  platform:"stories",     anchor:"Cabernet Day",       title:"National Cabernet Sauvignon Day. Bold on the shelf.", desc:"Stories feature — two Cabs (one BC, one international). Single frame each. Day-of.", status:"to-create" },
-  { id:62, month:"October",  date:"Oct 1",  platform:"ig-static",   anchor:"World Sake Day",     title:"World Sake Day. We have it. Here's where to start.", desc:"Static post featuring our sake selection. 2–3 bottles with brief tasting notes. Entry-level to aspirational.", status:"to-create" },
-  { id:63, month:"October",  date:"Oct 4",  platform:"stories",     anchor:"National Vodka Day", title:"National Vodka Day. Not all vodka is the same.",     desc:"Story featuring 2 vodkas — one craft BC option, one premium international. Short. Day-of.", status:"to-create" },
-  { id:64, month:"November", date:"Nov 7",  platform:"ig-static",   anchor:"Merlot Day",         title:"International Merlot Day. It deserved better.",      desc:"Static post. One great Merlot (BC or international). The one-line elevator pitch for a maligned grape.", status:"to-create" },
+  { id:50, month:"May",      date:"May 13", platform:"stories",     anchor:"World Whisky Day",   title:"World Whisky Day is Saturday. Here's our pick.",      desc:"Teaser story. One bottle. One line. Drives people in before the weekend.", status:"to-draft" },
+  { id:51, month:"May",      date:"May 16", platform:"ig-carousel", anchor:"World Whisky Day",   title:"Three whiskies. Every budget. World Whisky Day.",     desc:"3-slide carousel — starter, step-up, splurge. Specific bottles, real prices, one-line note each. Pairs with blog post.", status:"to-draft" },
+  { id:52, month:"May",      date:"May 28", platform:"stories",     anchor:"Chardonnay Day",     title:"International Chardonnay Day. The one that changed our minds.", desc:"Single story. One bottle of Chardonnay that surprises. Short caption. Not every Chardonnay is what you remember.", status:"to-draft" },
+  { id:53, month:"June",     date:"Jun 12", platform:"stories",     anchor:"Rosé Day",           title:"International Rosé Day. The cold shelf is ready.",    desc:"Day-of story. Photo of the cold rosé shelf. One line. Drives foot traffic for the weekend.", status:"to-draft" },
+  { id:54, month:"June",     date:"Jun 13", platform:"ig-carousel", anchor:"Gin Day",            title:"International Gin Day. The gins worth knowing.",      desc:"3-slide carousel — floral, citrus-led, and one unexpected gin. Real bottles from our shelf. Pairs with a cocktail suggestion.", status:"to-draft" },
+  { id:55, month:"July",     date:"Jul 11", platform:"ig-carousel", anchor:"World Rum Day",      title:"World Rum Day + Khatsahlano. The overlap we didn't plan.", desc:"Rum feature carousel on the day of Khatsahlano. Aged rum, white rum, agricole. Timing is genuinely perfect — rum is a summer drink.", status:"to-draft" },
+  { id:56, month:"July",     date:"Jul 24", platform:"stories",     anchor:"Tequila Day",        title:"National Tequila Day. Not the cheap stuff.",          desc:"Story featuring our blanco, reposado, and one mezcal. Short and specific. No lime jokes.", status:"to-draft" },
+  { id:57, month:"July",     date:"Jul 24", platform:"ig-static",   anchor:"Tequila Day",        title:"Tequila is not a shot. Three bottles that prove it.", desc:"Static post — 3 tequilas (blanco, reposado, mezcal), prices, one-line note. Clean product photography.", status:"to-draft" },
+  { id:58, month:"August",   date:"Aug 6",  platform:"ig-reel",     anchor:"World IPA Day",      title:"IPA Day. The fridge doesn't lie.",                   desc:"Fridge walk Reel — lead with the IPAs. West Coast, hazy, session. 30 seconds, no voiceover. Let the labels do the work.", status:"to-draft" },
+  { id:59, month:"August",   date:"Aug 7",  platform:"ig-carousel", anchor:"International Beer Day", title:"International Beer Day. Five styles, five countries.", desc:"One beer style per country — IPA (USA/Canada), Wit (Belgium), Lager (Germany), Stout (Ireland), Pilsner (Czechia). Real bottles from our shelf.", status:"to-draft" },
+  { id:60, month:"August",   date:"Aug 18", platform:"stories",     anchor:"Pinot Noir Day",     title:"World Pinot Noir Day. The one we keep going back to.", desc:"Single story. One Pinot Noir — BC, Burgundy, or Oregon. One reason. Day-of.", status:"to-draft" },
+  { id:61, month:"September",date:"Sep 3",  platform:"stories",     anchor:"Cabernet Day",       title:"National Cabernet Sauvignon Day. Bold on the shelf.", desc:"Stories feature — two Cabs (one BC, one international). Single frame each. Day-of.", status:"to-draft" },
+  { id:62, month:"October",  date:"Oct 1",  platform:"ig-static",   anchor:"World Sake Day",     title:"World Sake Day. We have it. Here's where to start.", desc:"Static post featuring our sake selection. 2–3 bottles with brief tasting notes. Entry-level to aspirational.", status:"to-draft" },
+  { id:63, month:"October",  date:"Oct 4",  platform:"stories",     anchor:"National Vodka Day", title:"National Vodka Day. Not all vodka is the same.",     desc:"Story featuring 2 vodkas — one craft BC option, one premium international. Short. Day-of.", status:"to-draft" },
+  { id:64, month:"November", date:"Nov 7",  platform:"ig-static",   anchor:"Merlot Day",         title:"International Merlot Day. It deserved better.",      desc:"Static post. One great Merlot (BC or international). The one-line elevator pitch for a maligned grape.", status:"to-draft" },
 
   // ── SPORTS ──────────────────────────────────────────────────────────────
-  { id:65, month:"May",      date:"May 20", platform:"ig-static",   anchor:"Whitecaps FC",       title:"Whitecaps are home. The fridge is ready.",           desc:"Match-day post template. Swap date and opponent for each home game. Photo of cold beer shelf or RTDs. Use as a recurring post.", status:"to-create" },
-  { id:66, month:"October",  date:"Oct 7",  platform:"stories",     anchor:"Canucks Opener",     title:"The Canucks are back. The fridge knows what to do.", desc:"Season opener teaser story. One night before the first game. Photo of BC craft beer and Canadian whisky. Gets people in the door.", status:"to-create" },
-  { id:67, month:"October",  date:"Oct 8",  platform:"ig-carousel", anchor:"Canucks Opener",     title:"Opening night. What's in the fridge.",               desc:"3-slide game-night guide — BC craft beer picks, a Canadian whisky, and a snack pairing. Repeatable template for all season.", status:"to-create" },
-  { id:68, month:"November", date:"Nov 19", platform:"stories",     anchor:"Grey Cup",           title:"Grey Cup is Sunday. This is the beer shelf.",        desc:"Pre-game story. Feature the Canadian lagers and craft beer section. Link to blog post if live. Game-time tone.", status:"to-create" },
-  { id:69, month:"November", date:"Nov 22", platform:"ig-carousel", anchor:"Grey Cup",           title:"Grey Cup Sunday. Canadian whisky. Canadian beer.",   desc:"3-slide carousel — two Canadian beers and a rye whisky. The most Canadian shopping list of the year.", status:"to-create" },
-  { id:70, month:"February", date:"Feb 4",  platform:"stories",     anchor:"Super Bowl",         title:"Super Bowl is Sunday. The checklist.",               desc:"Stories checklist format — beer, bourbon, tequila, snacks, non-alc option. Drives pre-game shopping Friday/Saturday.", status:"to-create" },
-  { id:71, month:"February", date:"Feb 8",  platform:"ig-carousel", anchor:"Super Bowl",         title:"Super Bowl watch party. The honest drinks guide.",   desc:"4-slide carousel — cold beer picks, a bourbon, a tequila, and the non-alc option. Prices on every slide.", status:"to-create" },
+  { id:65, month:"May",      date:"May 20", platform:"ig-static",   anchor:"Whitecaps FC",       title:"Whitecaps are home. The fridge is ready.",           desc:"Match-day post template. Swap date and opponent for each home game. Photo of cold beer shelf or RTDs. Use as a recurring post.", status:"to-draft" },
+  { id:66, month:"October",  date:"Oct 7",  platform:"stories",     anchor:"Canucks Opener",     title:"The Canucks are back. The fridge knows what to do.", desc:"Season opener teaser story. One night before the first game. Photo of BC craft beer and Canadian whisky. Gets people in the door.", status:"to-draft" },
+  { id:67, month:"October",  date:"Oct 8",  platform:"ig-carousel", anchor:"Canucks Opener",     title:"Opening night. What's in the fridge.",               desc:"3-slide game-night guide — BC craft beer picks, a Canadian whisky, and a snack pairing. Repeatable template for all season.", status:"to-draft" },
+  { id:68, month:"November", date:"Nov 19", platform:"stories",     anchor:"Grey Cup",           title:"Grey Cup is Sunday. This is the beer shelf.",        desc:"Pre-game story. Feature the Canadian lagers and craft beer section. Link to blog post if live. Game-time tone.", status:"to-draft" },
+  { id:69, month:"November", date:"Nov 22", platform:"ig-carousel", anchor:"Grey Cup",           title:"Grey Cup Sunday. Canadian whisky. Canadian beer.",   desc:"3-slide carousel — two Canadian beers and a rye whisky. The most Canadian shopping list of the year.", status:"to-draft" },
+  { id:70, month:"February", date:"Feb 4",  platform:"stories",     anchor:"Super Bowl",         title:"Super Bowl is Sunday. The checklist.",               desc:"Stories checklist format — beer, bourbon, tequila, snacks, non-alc option. Drives pre-game shopping Friday/Saturday.", status:"to-draft" },
+  { id:71, month:"February", date:"Feb 8",  platform:"ig-carousel", anchor:"Super Bowl",         title:"Super Bowl watch party. The honest drinks guide.",   desc:"4-slide carousel — cold beer picks, a bourbon, a tequila, and the non-alc option. Prices on every slide.", status:"to-draft" },
 
   // ── CULTURAL ────────────────────────────────────────────────────────────
-  { id:72, month:"July",     date:"Jul 31", platform:"stories",     anchor:"Vancouver Pride",    title:"Pride weekend. The natural wine shelf is stocked.", desc:"Teaser story. Orange wine, pét-nat, bottles with bold labels. Celebratory and genuine. Pairs with blog post drop.", status:"to-create" },
-  { id:73, month:"August",   date:"Aug 1",  platform:"ig-carousel", anchor:"Vancouver Pride",    title:"Pride picks. Natural, bold, and worth sharing.",     desc:"4-slide carousel — orange wine, pét-nat, craft canned cocktail, cold rosé. Each slide: photo + name + price + one line.", status:"to-create" },
-  { id:74, month:"October",  date:"Oct 25", platform:"stories",     anchor:"Diwali",             title:"Diwali is this week. The spirits shelf has ideas.",  desc:"Stories feature — Indian whisky (Paul John, Amrut), rum, and a gifting angle. Warm tone. Respectful and genuine.", status:"to-create" },
-  { id:75, month:"January",  date:"Jan 28", platform:"ig-static",   anchor:"Lunar New Year",     title:"Lunar New Year. Sake, plum wine, and something sparkling.", desc:"Static post — sake, umeshu, and a sparkling option. Clean styling. Respectful and genuine. Cross-category appeal.", status:"to-create" },
+  { id:72, month:"July",     date:"Jul 31", platform:"stories",     anchor:"Vancouver Pride",    title:"Pride weekend. The natural wine shelf is stocked.", desc:"Teaser story. Orange wine, pét-nat, bottles with bold labels. Celebratory and genuine. Pairs with blog post drop.", status:"to-draft" },
+  { id:73, month:"August",   date:"Aug 1",  platform:"ig-carousel", anchor:"Vancouver Pride",    title:"Pride picks. Natural, bold, and worth sharing.",     desc:"4-slide carousel — orange wine, pét-nat, craft canned cocktail, cold rosé. Each slide: photo + name + price + one line.", status:"to-draft" },
+  { id:74, month:"October",  date:"Oct 25", platform:"stories",     anchor:"Diwali",             title:"Diwali is this week. The spirits shelf has ideas.",  desc:"Stories feature — Indian whisky (Paul John, Amrut), rum, and a gifting angle. Warm tone. Respectful and genuine.", status:"to-draft" },
+  { id:75, month:"January",  date:"Jan 28", platform:"ig-static",   anchor:"Lunar New Year",     title:"Lunar New Year. Sake, plum wine, and something sparkling.", desc:"Static post — sake, umeshu, and a sparkling option. Clean styling. Respectful and genuine. Cross-category appeal.", status:"to-draft" },
 ];
 
 // ─── GOOGLE ADS ─────────────────────────────────────────────────────────
@@ -2592,9 +2611,11 @@ function renderBlog(filter) {
 
   // Filter then sort chronologically by publish date
   const filtered = posts.filter(p => {
-    const inPillar = filter.startsWith('pillar-') ? ('pillar-' + p.pillar === filter) : true;
-    const inStatus = filter.startsWith('status-') ? ('status-' + p.status === filter) : true;
-    return filter === 'all' ? true : (inPillar && inStatus);
+    if (filter === 'all')     return true;
+    if (filter === 'overdue') return isOverdue(p);
+    if (filter.startsWith('pillar-')) return 'pillar-' + p.pillar === filter;
+    if (filter.startsWith('status-')) return 'status-' + p.status === filter;
+    return true;
   });
   filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -2611,9 +2632,12 @@ function renderBlog(filter) {
       <div class="blog-card-body">
         <div class="blog-card-meta">
           <span class="blog-num">#${String(p.id).padStart(2,'0')}</span>
-          <span class="badge ${sInfo.cls} badge-click"
-                onclick="cyclePostStatus(${p.id}, event)"
-                title="Click to advance status">${sInfo.label}</span>
+          <span class="badge-wrap">
+            <span class="badge ${sInfo.cls} badge-click"
+                  onclick="cyclePostStatus(${p.id}, event)"
+                  title="Click to advance status · ${SYNC_CYCLE_BLOG.join(' → ')}">${sInfo.label}</span>
+            ${isOverdue(p) ? '<span class="overdue-dot" title="Past publish date"></span>' : ''}
+          </span>
         </div>
         <div class="blog-card-title">${p.title}</div>
         <div class="blog-card-date">${p.date}</div>
@@ -2757,11 +2781,14 @@ function renderSocial(filter) {
   };
 
   const statusInfo = {
-    'live':       { cls:'badge-live',    label:'Live' },
-    'ready':      { cls:'badge-ready',   label:'Ready' },
-    'drafted':    { cls:'badge-drafted', label:'Drafted' },
-    'to-create':  { cls:'badge-todraft', label:'To Create' },
-    'overdue':    { cls:'badge-overdue', label:'Overdue' },
+    'to-draft':  { cls:'badge-to-draft', label:'To Draft' },
+    'drafted':   { cls:'badge-drafted',  label:'Drafted'  },
+    'working':   { cls:'badge-working',  label:'Working'  },
+    'live':      { cls:'badge-live',     label:'Live'     },
+    // legacy
+    'to-create': { cls:'badge-to-draft', label:'To Draft' },
+    'ready':     { cls:'badge-working',  label:'Working'  },
+    'overdue':   { cls:'badge-overdue',  label:'Overdue'  },
   };
 
   months.forEach(month => {
@@ -2790,9 +2817,12 @@ function renderSocial(filter) {
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
           <span class="platform-chip ${pm.cls}">${pm.label}</span>
-          <span class="badge ${si.cls} badge-click"
-                onclick="cycleSocialStatus(${p.id}, event)"
-                title="Click to mark live / revert">${si.label}</span>
+          <span class="badge-wrap">
+            <span class="badge ${si.cls} badge-click"
+                  onclick="cycleSocialStatus(${p.id}, event)"
+                  title="Click to advance status · To Draft → Drafted → Working → Live">${si.label}</span>
+            ${isOverdue(p) ? '<span class="overdue-dot" title="Past post date"></span>' : ''}
+          </span>
         </div>
         <div style="font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.35;margin-bottom:6px">${p.title}</div>
         <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.02em">${p.date} · ${p.anchor}</div>
@@ -2933,8 +2963,8 @@ function loadChecklist() {
 // ─── GITHUB AUTO-SYNC ────────────────────────────────────────────────────
 const SYNC_REPO  = 'VinoVanChris/BBWS-Marketing';
 const SYNC_PATH  = 'status-overrides.json';
-const SYNC_CYCLE_BLOG   = ['to-draft','drafted','draft-ready','live'];
-const SYNC_CYCLE_SOCIAL = ['to-create','live'];
+const SYNC_CYCLE_BLOG   = ['to-draft','drafted','working','live'];
+const SYNC_CYCLE_SOCIAL = ['to-draft','drafted','working','live'];
 
 // Running overrides object — starts empty, populated from GitHub on load
 const liveOverrides = { posts: {}, socialPosts: {} };
