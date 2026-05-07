@@ -2935,31 +2935,69 @@ const ganttItems = [
 ];
 
 // ─── RENDER GANTT ─────────────────────────────────────────────────────────
+// Parse "YYYY-MM-DD" as LOCAL midnight (avoids UTC-offset drift)
+function ganttLocalDate(str) {
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// Shared range constants (local midnight, no UTC drift)
+const GANTT_START = new Date(2026, 3, 1);   // Apr 1 2026
+const GANTT_END   = new Date(2027, 2, 1);   // Mar 1 2027
+const GANTT_MS    = GANTT_END - GANTT_START;
+
+function ganttTodayPct() {
+  const now = new Date();
+  // Use start-of-today for a clean day-level position
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.max(0, Math.min(100, (today - GANTT_START) / GANTT_MS * 100));
+}
+
+// Live update: move every today-line without re-rendering the chart
+function updateGanttToday() {
+  const pct = ganttTodayPct();
+  document.querySelectorAll('[data-gantt-today]').forEach(el => {
+    el.style.left = pct + '%';
+  });
+  // Also refresh the date label in the header marker
+  document.querySelectorAll('[data-gantt-today-label]').forEach(el => {
+    const now = new Date();
+    el.textContent = now.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
+  });
+}
+
+// Schedule next update at the following midnight (so the marker jumps
+// to the correct day even if the tab is left open overnight)
+function scheduleGanttMidnight() {
+  const now  = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const msUntilMidnight = next - now;
+  setTimeout(function() {
+    updateGanttToday();
+    scheduleGanttMidnight(); // re-arm for the next day
+  }, msUntilMidnight);
+}
+
 function renderGantt() {
   const container = document.getElementById('ganttChart');
   if (!container) return;
 
-  const RANGE_START = new Date('2026-04-01');
-  const RANGE_END   = new Date('2027-03-01');
-  const TOTAL_MS    = RANGE_END - RANGE_START;
-
   // Build month list
   const months = [];
-  let cur = new Date(RANGE_START);
-  while (cur < RANGE_END) {
+  let cur = new Date(GANTT_START);
+  while (cur < GANTT_END) {
     months.push(new Date(cur));
     cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
   }
   const N = months.length;
 
-  const now       = new Date();
-  const todayPct  = Math.max(0, Math.min(100, (now - RANGE_START) / TOTAL_MS * 100));
+  const todayPct = ganttTodayPct();
 
   function datePct(str) {
-    return Math.max(0, Math.min(100, (new Date(str) - RANGE_START) / TOTAL_MS * 100));
+    return Math.max(0, Math.min(100, (ganttLocalDate(str) - GANTT_START) / GANTT_MS * 100));
   }
   function fmtDate(str) {
-    return new Date(str).toLocaleDateString('en-CA', { month:'short', day:'numeric' });
+    return ganttLocalDate(str).toLocaleDateString('en-CA', { month:'short', day:'numeric' });
   }
 
   const colGrid = () => {
@@ -2971,8 +3009,13 @@ function renderGantt() {
     return g;
   };
 
+  // Today line — data-gantt-today so updateGanttToday() can reposition it
+  const now = new Date();
+  const todayLabel = now.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
   const todayLine = () =>
-    '<div style="position:absolute;top:0;bottom:0;left:'+todayPct+'%;width:2px;background:rgba(255,59,48,0.55);z-index:5;pointer-events:none"></div>';
+    '<div data-gantt-today style="position:absolute;top:0;bottom:0;left:'+todayPct+'%;width:2px;background:rgba(255,59,48,0.6);z-index:5;pointer-events:none">' +
+      '<span data-gantt-today-label style="position:absolute;top:4px;left:4px;font-size:9px;font-weight:700;color:rgba(255,59,48,0.9);white-space:nowrap;letter-spacing:.03em">'+todayLabel+'</span>' +
+    '</div>';
 
   let html = '<div style="min-width:960px">';
 
@@ -3008,16 +3051,13 @@ function renderGantt() {
     rowIdx++;
 
     html += '<div style="display:flex;border-bottom:1px solid var(--border);background:'+bg+';min-height:44px">';
-    // Label
     html += '<div style="width:220px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;gap:2px">';
     html += '<div style="font-size:12px;font-weight:500;color:var(--text-primary);line-height:1.35">'+item.name+'</div>';
     html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+item.color+'">'+item.cat+'</div>';
     html += '</div>';
-    // Track
     html += '<div style="flex:1;position:relative;overflow:hidden">';
     html += colGrid();
     html += todayLine();
-    // Bar
     html += '<div title="'+item.name+' · '+startLbl+' → '+endLbl+'" style="position:absolute;top:50%;transform:translateY(-50%);left:'+leftPct+'%;width:'+widthPct+'%;height:24px;background:'+item.color+';border-radius:6px;z-index:3;display:flex;align-items:center;padding:0 8px;overflow:hidden;white-space:nowrap;cursor:default;box-shadow:0 1px 4px rgba(0,0,0,0.18)">';
     if (widthPct > 4.5) {
       html += '<span style="font-size:10px;color:rgba(255,255,255,0.93);font-weight:500;overflow:hidden;text-overflow:ellipsis">'+startLbl+' → '+endLbl+'</span>';
@@ -3041,6 +3081,7 @@ renderSocial('all');
 renderGoogle();
 renderGantt();
 loadChecklist();
+scheduleGanttMidnight(); // keeps today-line accurate if tab stays open overnight
 </script>
 </body>
 </html>
