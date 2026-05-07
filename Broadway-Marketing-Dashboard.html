@@ -494,7 +494,7 @@ header {
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .social-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-.social-card-stripe { height: 3px; }
+.social-card-stripe { height: 5px; }
 .social-card-body { padding: 14px 16px; }
 .social-card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
 .social-card-date { font-size:11px; color:var(--text-tertiary); font-weight:500; }
@@ -2847,18 +2847,21 @@ function renderSocial(filter) {
       const card = document.createElement('div');
       card.className = 'social-card';
       card.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-          <span class="platform-chip ${pm.cls}">${pm.label}</span>
-          <span class="badge-wrap">
-            <span class="badge ${si.cls} badge-click"
-                  onclick="cycleSocialStatus(${p.id}, event)"
-                  title="Click to advance status · To Draft → Drafted → Working → Live">${si.label}</span>
-            ${isOverdue(p) ? '<span class="overdue-dot" title="Past post date"></span>' : ''}
-          </span>
+        <div class="social-card-stripe ${pm.cls}"></div>
+        <div class="social-card-body">
+          <div class="social-card-top">
+            <span class="platform-chip ${pm.cls}">${pm.label}</span>
+            <span class="badge-wrap">
+              <span class="badge ${si.cls} badge-click"
+                    onclick="cycleSocialStatus(${p.id}, event)"
+                    title="Click to advance · To Draft → Drafted → Working → Live">${si.label}</span>
+              ${isOverdue(p) ? '<span class="overdue-dot" title="Past post date"></span>' : ''}
+            </span>
+          </div>
+          <div class="social-card-title">${p.title}</div>
+          <div class="social-card-date">${p.date} · ${p.anchor}</div>
+          <div class="social-card-desc">${p.desc}</div>
         </div>
-        <div style="font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.35;margin-bottom:6px">${p.title}</div>
-        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.02em">${p.date} · ${p.anchor}</div>
-        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${p.desc}</div>
       `;
       grid.appendChild(card);
     });
