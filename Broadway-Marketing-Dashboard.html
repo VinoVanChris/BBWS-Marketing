@@ -3011,16 +3011,44 @@ function setSyncStatus(state) {
   const el = document.getElementById('syncIndicator');
   if (!el) return;
   el.className = '';
+  el.onclick = null;
+  el.style.cursor = '';
+  el.title = '';
   const map = {
-    pending: ['● Unsaved', 'sync-pending'],
-    syncing: ['↑ Syncing…', 'sync-syncing'],
-    saved:   ['✓ Saved',   'sync-saved'],
-    error:   ['✗ Failed',  'sync-error']
+    pending:   ['● Unsaved',          'sync-pending'],
+    syncing:   ['↑ Syncing…',         'sync-syncing'],
+    saved:     ['✓ Saved',            'sync-saved'],
+    error:     ['✗ Failed — tap to reconnect', 'sync-error'],
+    'no-token':['⚙ Connect GitHub',   'sync-error'],
   };
   const [text, cls] = map[state] || ['', ''];
   el.textContent = text;
   if (cls) el.classList.add(cls);
   if (state === 'saved') setTimeout(() => setSyncStatus(''), 3000);
+  if (state === 'error' || state === 'no-token') {
+    el.style.cursor = 'pointer';
+    el.title = 'Click to enter your GitHub token';
+    el.onclick = promptGitHubToken;
+  }
+}
+
+function promptGitHubToken() {
+  const existing = localStorage.getItem('bbws_gh_token') || '';
+  const token = prompt(
+    'Paste your GitHub Personal Access Token (repo scope).\n' +
+    'Get one at: github.com/settings/tokens\n\n' +
+    (existing ? 'A token is already saved — paste a new one to replace it.' : ''),
+    ''
+  );
+  if (!token) return;
+  const t = token.trim();
+  if (!t.startsWith('ghp_') && !t.startsWith('github_pat_')) {
+    alert('That doesn\'t look like a valid token. It should start with ghp_ or github_pat_.');
+    return;
+  }
+  localStorage.setItem('bbws_gh_token', t);
+  setSyncStatus('pending');
+  pushOverrides();
 }
 
 async function loadOverrides() {
@@ -3282,6 +3310,9 @@ renderGoogle();
 renderGantt();
 loadChecklist();
 scheduleGanttMidnight();
+
+// Show connect prompt if no token stored yet
+if (!syncToken()) setSyncStatus('no-token');
 
 // Load status overrides from GitHub, then re-render affected tabs
 loadOverrides().then(() => {
