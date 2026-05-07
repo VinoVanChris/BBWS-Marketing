@@ -251,6 +251,7 @@ header {
 }
 .blog-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 .blog-card-stripe { height: 4px; }
+.blog-card-top { height: 7px; }
 .blog-card-body { padding: 20px 22px 18px; }
 .blog-card-eyebrow {
   display: flex;
@@ -1136,7 +1137,7 @@ header {
 <div id="tab-blog" class="tab-panel">
   <div class="section-header">
     <span class="section-title">Blog Content Calendar</span>
-    <span class="section-sub">24 posts · April 2026 – December 2026 · Wine · Spirits · Beer · RTDs · Gifts & Food</span>
+    <span class="section-sub">30 posts · April 2026 – February 2027 · Sorted chronologically · Colour-coded by pillar</span>
   </div>
 
   <div class="filter-bar">
@@ -2569,14 +2570,19 @@ function renderThisWeek() {
 function renderBlog(filter) {
   const grid = document.getElementById('blogGrid');
   grid.innerHTML = '';
-  posts.forEach(p => {
-    const inPillar = filter.startsWith('pillar-') ? ('pillar-'+p.pillar === filter) : true;
-    const inStatus = filter.startsWith('status-') ? ('status-'+p.status === filter) : true;
-    const show = filter === 'all' ? true : (inPillar && inStatus);
-    if (!show) return;
 
+  // Filter then sort chronologically by publish date
+  const filtered = posts.filter(p => {
+    const inPillar = filter.startsWith('pillar-') ? ('pillar-' + p.pillar === filter) : true;
+    const inStatus = filter.startsWith('status-') ? ('status-' + p.status === filter) : true;
+    return filter === 'all' ? true : (inPillar && inStatus);
+  });
+  filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  filtered.forEach(p => {
     const pColor = pillars[p.pillar].color;
-    const sInfo = statusInfo[p.status];
+    const pName  = pillars[p.pillar].name;
+    const sInfo  = statusInfo[p.status];
 
     const card = document.createElement('div');
     card.className = 'blog-card';
@@ -2592,7 +2598,7 @@ function renderBlog(filter) {
         <div class="blog-card-date">${p.date}</div>
         <span class="blog-card-keyword">${p.keyword}</span>
         <div class="blog-card-footer">
-          <span class="pillar-badge pillar-${p.pillar}">Pillar ${p.pillar}</span>
+          <span class="pillar-badge pillar-${p.pillar}" title="${pName}">Pillar ${p.pillar}</span>
           <span class="expand-hint">View details →</span>
         </div>
       </div>`;
