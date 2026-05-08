@@ -815,10 +815,10 @@ header {
 .wc-tier { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
 .wc-tier-header { padding:18px 20px 14px; background:var(--surface-2); border-bottom:1px solid var(--border); }
 .wc-tier-badge { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#6B2737; margin-bottom:6px; }
-.wc-tier.reserve .wc-tier-badge { color:var(--blue); }
+.wc-tier.connoisseur .wc-tier-badge { color:var(--blue); }
 .wc-tier-name { font-size:17px; font-weight:700; color:var(--text-primary); margin-bottom:4px; }
 .wc-tier-price { font-size:32px; font-weight:700; color:#6B2737; line-height:1; letter-spacing:-0.03em; }
-.wc-tier.reserve .wc-tier-price { color:var(--blue); }
+.wc-tier.connoisseur .wc-tier-price { color:var(--blue); }
 .wc-tier-price span { font-size:14px; font-weight:500; color:var(--text-secondary); }
 .wc-tier-body { padding:16px 20px; }
 .wc-tier-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:flex-start; }
@@ -2654,24 +2654,24 @@ const wcPhases = [
 ];
 
 const wcTiers = [
-  { cls:'classic', badge:'Classic', name:'Broadway Grand Crew — Classic', price:'$90', cadence:'per shipment · bimonthly (6×/year)', target:'100 members', revenue:'$54,000 / year',
+  { cls:'discovery', badge:'Discovery', name:'Broadway Grand Crew — Discovery', price:'$99', cadence:'per period · 6 shipments/year · $594/yr', target:'200 members', revenue:'$118,800 / year',
     rows:[
-      { lbl:'Box', val:'3 bottles — 2 curated wine + 1 wildcard (premium BC cider, sake, or craft beer)' },
-      { lbl:'Curator note', val:'Printed card with tasting notes, producer story, and pairing suggestion — authored by me' },
-      { lbl:'In-store', val:'5% off club wines purchased in-store' },
-      { lbl:'Events', val:'Invite to biannual Bottle Shop Club tasting events' },
-      { lbl:'Delivery', val:'Included Metro Vancouver · discounted province-wide' },
-      { lbl:'Flexibility', val:'Pause up to 2 shipments/year · skip or swap 1 wine per delivery · cancel anytime' },
+      { lbl:'Bottles', val:'3 spec bottles per shipment — curated by Chris, sourced to order' },
+      { lbl:'Loyalty', val:'1.5× points multiplier — 10% back on every purchase in-store' },
+      { lbl:'Curator card', val:'Printed card with tasting notes, producer story, and pairing suggestion' },
+      { lbl:'Events', val:'Invite to all Grand Crew Sunday Tastings' },
+      { lbl:'Delivery dates', val:'Sept 1 · Nov 1 · Jan 1 · Mar 1 · May 1 · Jul 1' },
+      { lbl:'Flexibility', val:'Pause up to 2 shipments/year · cancel anytime' },
     ]
   },
-  { cls:'reserve', badge:'Reserve', name:'Broadway Grand Crew — Reserve', price:'$145', cadence:'per shipment · bimonthly (6×/year)', target:'50 members', revenue:'$43,500 / year',
+  { cls:'connoisseur', badge:'Connoisseur', name:'Broadway Grand Crew — Connoisseur', price:'$250', cadence:'per period · 6 shipments/year · $1,500/yr', target:'100 members', revenue:'$150,000 / year',
     rows:[
-      { lbl:'Box', val:'6 bottles — 3 curated wine + 1 wildcard + 2 premium (at least 1 limited or hard-to-find)' },
-      { lbl:'Curator note', val:'Extended card + QR-linked video note from me, winemaker background, serving and storage tip' },
-      { lbl:'In-store', val:'10% off club wines + complimentary glass pour at any in-store tasting' },
-      { lbl:'Events', val:'Priority invite + reserved seat at all events · occasional exclusive members-only sessions' },
-      { lbl:'Delivery', val:'Included Metro Vancouver + BC province-wide' },
-      { lbl:'Flexibility', val:'Full skip/swap/pause · personal consultation call with me to customise any shipment · cancel anytime' },
+      { lbl:'Bottles', val:'6 spec bottles per shipment — at least 1 limited or allocated release' },
+      { lbl:'Loyalty', val:'2× points multiplier — 13.3% back on every purchase in-store' },
+      { lbl:'Curator card', val:'Extended card + QR-linked video note, winemaker background, serving and cellaring tip' },
+      { lbl:'Events', val:'Priority seating at all Grand Crew events · occasional Connoisseur-only sessions' },
+      { lbl:'Delivery dates', val:'Sept 1 · Nov 1 · Jan 1 · Mar 1 · May 1 · Jul 1' },
+      { lbl:'Flexibility', val:'Full skip/swap/pause · personal consultation call to customise any shipment · cancel anytime' },
     ]
   },
 ];
@@ -2733,10 +2733,10 @@ const wcCalendar = [
 function renderWineClub() {
   // Metrics bar
   document.getElementById('wcMetrics').innerHTML = [
-    { val:'$97,500', lbl:'Year-1 revenue target' },
-    { val:'150',     lbl:'Total member target' },
-    { val:'$90–145', lbl:'Price per shipment' },
-    { val:'Sep 2026',lbl:'Launch window' },
+    { val:'$268,800', lbl:'Year 1 revenue target' },
+    { val:'300',      lbl:'Year 1 member target' },
+    { val:'$99–250',  lbl:'Per period (6×/year)' },
+    { val:'Sept 1',   lbl:'First shipment date' },
   ].map(m => `<div class="wc-metric"><div class="wc-metric-val">${m.val}</div><div class="wc-metric-lbl">${m.lbl}</div></div>`).join('');
 
   // Phase tracker
